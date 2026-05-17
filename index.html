@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terra-Media: Aventura 3D</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/6.0.0/babylon.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/6.0.0/babylonjs.loaders.min.js"></script>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { overflow:hidden; background:#000; font-family:'Segoe UI',sans-serif; color:#fff; }
+#renderCanvas { width:100%; height:100vh; touch-action:none; display:block; }
+#loading { position:absolute; top:0; left:0; width:100%; height:100%; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; z-index:300; }
+#loading h1 { color:#FFD700; font-size:2rem; margin-bottom:20px; }
+#load-bar { width:300px; height:8px; background:#222; border-radius:4px; }
+#load-fill { height:100%; width:0%; background:#FFD700; border-radius:4px; transition:width 0.3s; }
+#loading p { color:#aaa; margin-top:10px; font-size:0.9rem; }
+#intro-screen { position:absolute; top:0; left:0; width:100%; height:100%; z-index:200; background:#000; display:none; }
+#intro-overlay { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; z-index:10; }
+#intro-title { text-align:center; opacity:0; transition:opacity 2s; }
+#intro-tagline { opacity:0; transition:opacity 2s; color:#ccc; font-size:0.9rem; margin-top:20px; font-style:italic; }
+#intro-heroes { opacity:0; transition:opacity 1s; display:flex; gap:15px; pointer-events:auto; margin-top:25px; }
+.intro-card { text-align:center; cursor:pointer; padding:18px 24px; background:rgba(0,0,0,0.7); border:2px solid #555; border-radius:10px; transition:all 0.3s; min-width:120px; }
+.intro-card:hover { border-color:#FFD700; transform:translateY(-5px); box-shadow:0 8px 25px rgba(255,215,0,0.3); }
+#hud { display:none; position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:50; }
+#hud > * { pointer-events:auto; }
+#top-bar { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.75); border:1px solid #444; border-radius:8px; padding:10px 14px; pointer-events:auto; }
+#top-bar h3 { color:#FFD700; font-size:14px; margin-bottom:6px; }
+.bar-container { width:180px; height:16px; background:#222; border-radius:8px; margin:4px 0; position:relative; overflow:hidden; }
+.bar-fill { height:100%; border-radius:8px; transition:width 0.3s; }
+#hp-bar .bar-fill { background:linear-gradient(to right,#660000,#CC0000); }
+#mp-bar .bar-fill { background:linear-gradient(to right,#000066,#0044CC); }
+.bar-label { position:absolute; top:0; left:0; width:100%; text-align:center; font-size:10px; line-height:16px; color:#fff; text-shadow:1px 1px 1px #000; }
+#xp-bar { width:180px; height:6px; background:#222; border-radius:3px; margin-top:5px; }
+#xp-fill { height:100%; background:#AAAA00; border-radius:3px; width:0%; transition:width 0.3s; }
+#level-label { color:#FFD700; font-size:11px; margin-top:3px; }
+#skills-bar { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:8px; pointer-events:auto; }
+.skill-btn { width:52px; height:52px; background:rgba(0,0,0,0.85); border:2px solid #555; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:border-color 0.2s; }
+.skill-btn:hover { border-color:#FFD700; }
+.skill-btn .icon { font-size:18px; }
+.skill-btn .key { font-size:9px; color:#aaa; }
+.skill-btn .cd-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); border-radius:6px; display:none; line-height:52px; text-align:center; color:#fff; font-size:12px; }
+#enemy-info { position:absolute; top:10px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.75); border:2px solid #880000; border-radius:8px; padding:8px 20px; display:none; text-align:center; pointer-events:auto; }
+#enemy-info h4 { color:#FF4444; font-size:14px; }
+#enemy-hp-bar { width:220px; height:12px; background:#333; border-radius:6px; margin-top:5px; }
+#enemy-hp-fill { height:100%; background:linear-gradient(to right,#880000,#FF2200); border-radius:6px; transition:width 0.2s; }
+#msg-log { position:absolute; bottom:90px; left:20px; max-width:320px; pointer-events:none; }
+.msg { color:#fff; font-size:12px; padding:3px 0; opacity:1; transition:opacity 1s; text-shadow:1px 1px 2px #000; }
+#minimap { position:absolute; top:10px; right:10px; width:150px; height:150px; border:2px solid #444; border-radius:4px; background:rgba(0,0,0,0.6); pointer-events:auto; }
+#new-char-btn { position:absolute; top:170px; right:10px; padding:6px 12px; background:rgba(0,0,0,0.7); color:#FFD700; border:1px solid #FFD700; border-radius:6px; cursor:pointer; font-size:11px; pointer-events:auto; }
+#crosshair { display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; z-index:55; }
+#dialog-box { display:none; position:absolute; bottom:100px; left:50%; transform:translateX(-50%); width:500px; max-width:90%; background:rgba(0,0,0,0.92); border:2px solid #FFD700; border-radius:12px; padding:18px; text-align:center; pointer-events:auto; }
+#dialog-box h3 { color:#FFD700; margin-bottom:8px; font-size:1.1rem; }
+#dialog-box p { color:#ccc; font-size:13px; margin-bottom:12px; line-height:1.4; }
+#dialog-box button { padding:8px 22px; background:#222; color:#FFD700; border:1px solid #FFD700; border-radius:6px; cursor:pointer; margin:0 5px; font-size:12px; }
+#dialog-box button:hover { background:#333; }
+#region-label { position:absolute; top:50px; left:50%; transform:translateX(-50%); color:#FFD700; font-size:14px; opacity:0; transition:opacity 1s; pointer-events:none; text-shadow:0 0 10px rgba(255,200,0,0.5); }
+</style>
+</head>
+<body>
+<canvas id="renderCanvas"></canvas>
+
+<div id="loading">
+    <h1>TERRA-MEDIA</h1>
+    <div id="load-bar"><div id="load-fill"></div></div>
+    <p id="load-text">Carregando modelos...</p>
+</div>
+
+<div id="intro-screen">
+    <div id="intro-overlay">
+        <div id="intro-title">
+            <div style="color:#ddd;font-size:0.9rem;letter-spacing:4px;margin-bottom:8px;">UMA JORNADA PELA</div>
+            <div style="color:#FFD700;font-size:3rem;font-weight:bold;text-shadow:0 0 30px rgba(255,150,0,0.6);letter-spacing:6px;">TERRA-MEDIA</div>
+            <div style="color:#FF6600;font-size:1rem;margin-top:10px;letter-spacing:3px;">REALISMO 3D</div>
+        </div>
+        <div id="intro-tagline">Clique em um heroi para iniciar sua jornada</div>
+        <div id="intro-heroes">
+            <div class="intro-card" data-char="0"><div style="color:#FFD700;font-size:1.1rem;font-weight:bold;">Bernardino</div><div style="color:#aaa;font-size:0.75rem;">Barbaro</div></div>
+            <div class="intro-card" data-char="1"><div style="color:#4488FF;font-size:1.1rem;font-weight:bold;">Bernardo</div><div style="color:#aaa;font-size:0.75rem;">Guerreiro</div></div>
+            <div class="intro-card" data-char="2"><div style="color:#44AA44;font-size:1.1rem;font-weight:bold;">Raphael</div><div style="color:#aaa;font-size:0.75rem;">Arqueiro</div></div>
+            <div class="intro-card" data-char="3"><div style="color:#CC44FF;font-size:1.1rem;font-weight:bold;">Leticia</div><div style="color:#aaa;font-size:0.75rem;">Maga Elfica</div></div>
+        </div>
+    </div>
+</div>
+
+<div id="hud">
+    <button id="new-char-btn" onclick="location.reload()">Novo Personagem</button>
+    <div id="top-bar">
+        <h3 id="hud-name">Heroi</h3>
+        <div class="bar-container" id="hp-bar"><div class="bar-fill" style="width:100%"></div><div class="bar-label">100/100</div></div>
+        <div class="bar-container" id="mp-bar"><div class="bar-fill" style="width:100%"></div><div class="bar-label">50/50</div></div>
+        <div id="xp-bar"><div id="xp-fill"></div></div>
+        <div id="level-label">Nivel 1</div>
+    </div>
+    <div id="enemy-info"><h4 id="enemy-name">Inimigo</h4><div id="enemy-hp-bar"><div id="enemy-hp-fill"></div></div></div>
+    <div id="skills-bar">
+        <div class="skill-btn" data-skill="0"><span class="icon">I</span><span class="key">1</span><div class="cd-overlay"></div></div>
+        <div class="skill-btn" data-skill="1"><span class="icon">II</span><span class="key">2</span><div class="cd-overlay"></div></div>
+        <div class="skill-btn" data-skill="2"><span class="icon">III</span><span class="key">3</span><div class="cd-overlay"></div></div>
+        <div class="skill-btn" data-skill="3"><span class="icon">IV</span><span class="key">4</span><div class="cd-overlay"></div></div>
+    </div>
+    <div id="msg-log"></div>
+    <canvas id="minimap" width="150" height="150"></canvas>
+    <div id="crosshair"><div style="width:24px;height:24px;position:relative;"><div style="position:absolute;top:11px;left:0;width:10px;height:2px;background:#0f0;"></div><div style="position:absolute;top:11px;right:0;width:10px;height:2px;background:#0f0;"></div><div style="position:absolute;left:11px;top:0;width:2px;height:10px;background:#0f0;"></div><div style="position:absolute;left:11px;bottom:0;width:2px;height:10px;background:#0f0;"></div></div></div>
+    <div id="dialog-box"><h3 id="dialog-name"></h3><p id="dialog-text"></p><button id="dialog-accept">Aceitar</button><button id="dialog-close">Fechar</button></div>
+    <div id="region-label"></div>
+</div>
+
+<script>
+// ── GAME CONFIG ──
+const MAP_SIZE = 120;
+const heroData = [
+    { name:'Bernardino', cls:'Barbaro', hp:120, mp:30, atk:18, def:8, spd:5, color:'#8B4513', skills:['Golpe Brutal','Furia','Grito de Guerra','Regenerar'] },
+    { name:'Bernardo', cls:'Guerreiro', hp:150, mp:40, atk:14, def:14, spd:4, color:'#2255CC', skills:['Investida','Escudo','Provocar','Cura Divina'] },
+    { name:'Raphael', cls:'Arqueiro', hp:90, mp:50, atk:16, def:6, spd:7, color:'#44AA44', skills:['Flecha','Chuva de Flechas','Armadilha','Evasao'] },
+    { name:'Leticia', cls:'Maga', hp:80, mp:80, atk:20, def:5, spd:4, color:'#CC44FF', skills:['Bola de Fogo','Nevasca','Raio','Cura Arcana'] }
+];
+const enemyData = [
+    {name:'Orc Guerreiro',type:'orc',hp:60,atk:8,def:4,xp:30,color:[0.2,0.35,0.15]},
+    {name:'Orc Guerreiro',type:'orc',hp:60,atk:8,def:4,xp:30,color:[0.2,0.35,0.15]},
+    {name:'Orc Guerreiro',type:'orc',hp:60,atk:8,def:4,xp:30,color:[0.2,0.35,0.15]},
+    {name:'Nazgul',type:'nazgul',hp:120,atk:15,def:8,xp:80,color:[0.05,0.05,0.05]},
+    {name:'Nazgul',type:'nazgul',hp:120,atk:15,def:8,xp:80,color:[0.05,0.05,0.05]},
+    {name:'Gollum',type:'gollum',hp:40,atk:6,def:2,xp:40,color:[0.4,0.45,0.3]},
+    {name:'Saruman',type:'saruman',hp:200,atk:20,def:12,xp:200,color:[0.9,0.9,0.9]},
+    {name:'Smaug',type:'dragon',hp:500,atk:35,def:20,xp:500,color:[0.6,0.1,0.02]}
+];
+const npcData = [
+    {name:'Gandalf',x:-15,z:-50,color:[0.85,0.85,0.85],quest:'Derrote 3 Orcs.',target:'orc',needed:3},
+    {name:'Aragorn',x:15,z:-50,color:[0.3,0.2,0.1],quest:'Elimine 2 Nazgul.',target:'nazgul',needed:2},
+    {name:'Legolas',x:-35,z:35,color:[0.2,0.5,0.2],quest:'Capture Gollum.',target:'gollum',needed:1},
+    {name:'Frodo',x:35,z:35,color:[0.5,0.35,0.1],quest:'Derrote Smaug!',target:'dragon',needed:1}
+];
+const enemyPositions = [[25,25],[40,10],[-35,25],[55,-35],[-55,-45],[65,55],[-75,75],[90,-80]];
+const skillCooldowns = [1.5, 8, 12, 15];
+const skillMpCost = [0, 10, 15, 20];
+
+let selectedChar=0, gameStarted=false, engine, scene, camera, shadowGen;
+let player=null, playerMesh=null, playerAnims={}, enemies=[], npcs=[], targetEnemy=null;
+let lootItems=[], mounted=false, mountMesh=null, fpMode=false;
+let keys={}, walkTime=0, playerMoving=false, currentRegion='', musicState='peace';
+let ac=null;
+
+window.addEventListener('keydown', e => { keys[e.code]=true; });
+window.addEventListener('keyup', e => { keys[e.code]=false; });
+</script>
+</body>
+</html>
