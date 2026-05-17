@@ -327,30 +327,7 @@ function createTerrain() {
     // Ground with procedural grass texture
     const ground = BABYLON.MeshBuilder.CreateGround('ground', {width:MAP_SIZE*2, height:MAP_SIZE*2, subdivisions:60}, scene);
     const gMat = new BABYLON.PBRMaterial('gMat', scene);
-   gMat.albedoColor = new BABYLON.Color3(0.2, 0.45, 0.12);
-    const ctx = grassTex.getContext();
-    // Base green
-    ctx.fillStyle = '#2d5a1e';
-    ctx.fillRect(0, 0, 512, 512);
-    // Grass blades and variation
-    for (let i = 0; i < 3000; i++) {
-        const x = Math.random()*512, y = Math.random()*512;
-        const g = Math.floor(60 + Math.random()*80);
-        ctx.fillStyle = `rgb(${20+Math.floor(Math.random()*30)},${g},${10+Math.floor(Math.random()*20)})`;
-        ctx.fillRect(x, y, 1+Math.random()*3, 4+Math.random()*8);
-    }
-    // Dirt patches
-    for (let i = 0; i < 50; i++) {
-        const x = Math.random()*512, y = Math.random()*512;
-        ctx.fillStyle = `rgba(80,50,20,${0.2+Math.random()*0.3})`;
-        ctx.beginPath();
-        ctx.arc(x, y, 5+Math.random()*15, 0, Math.PI*2);
-        ctx.fill();
-    }
-    grassTex.update();
-    gMat.albedoTexture = grassTex;
-    gMat.albedoTexture.uScale = 20;
-    gMat.albedoTexture.vScale = 20;
+  
     gMat.roughness = 0.95;
     gMat.metallic = 0;
     // Bump for depth
