@@ -104,6 +104,7 @@ const heroData = [
 let selectedChar = 0, gameStarted = false;
 let player = null, enemies = [], npcs = [], targetEnemy = null;
 let engine, scene, camera, playerMesh;
+let shadowGen;
 
 // ── INTRO (uses separate canvas) ──
 (function() {
@@ -271,7 +272,7 @@ function initGame() {
     hemi.groundColor = new BABYLON.Color3(0.2, 0.15, 0.1);
 
     // Shadows
-    const shadowGen = new BABYLON.ShadowGenerator(2048, sun);
+    shadowGen = new BABYLON.ShadowGenerator(2048, sun);
     shadowGen.useBlurExponentialShadowMap = true;
     shadowGen.blurKernel = 32;
 
@@ -327,7 +328,7 @@ function createTerrain() {
     const ground = BABYLON.MeshBuilder.CreateGround('ground', {width:MAP_SIZE*2, height:MAP_SIZE*2, subdivisions:60}, scene);
     const gMat = new BABYLON.PBRMaterial('gMat', scene);
     // Create procedural grass texture
-    const grassTex = new BABYLON.DynamicTexture('grassTex', 512, scene);
+    const grassTex = new BABYLON.DynamicTexture('grassTex', 512, scene, false);
     const ctx = grassTex.getContext();
     // Base green
     ctx.fillStyle = '#2d5a1e';
@@ -354,7 +355,7 @@ function createTerrain() {
     gMat.roughness = 0.95;
     gMat.metallic = 0;
     // Bump for depth
-    const bumpTex = new BABYLON.DynamicTexture('bumpTex', 256, scene);
+    const bumpTex = new BABYLON.DynamicTexture('bumpTex', 256, scene, false);
     const bCtx = bumpTex.getContext();
     for (let x=0; x<256; x++) for (let y=0; y<256; y++) {
         const v = Math.floor(128 + (Math.random()-0.5)*60);
