@@ -327,8 +327,7 @@ function createTerrain() {
     // Ground with procedural grass texture
     const ground = BABYLON.MeshBuilder.CreateGround('ground', {width:MAP_SIZE*2, height:MAP_SIZE*2, subdivisions:60}, scene);
     const gMat = new BABYLON.PBRMaterial('gMat', scene);
-    // Create procedural grass texture
-    const grassTex = new BABYLON.DynamicTexture('grassTex', 512, scene, false);
+   gMat.albedoColor = new BABYLON.Color3(0.2, 0.45, 0.12);
     const ctx = grassTex.getContext();
     // Base green
     ctx.fillStyle = '#2d5a1e';
