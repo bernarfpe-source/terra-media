@@ -8,51 +8,52 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{overflow:hidden;background:#000;font-family:'Segoe UI',sans-serif;color:#fff}
 canvas{display:block}
-#intro{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center}
-#intro h1{color:#FFD700;font-size:3rem;text-shadow:0 0 30px rgba(255,150,0,0.6);letter-spacing:6px;opacity:0;animation:fadeIn 2s 0.5s forwards}
+#intro{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at center,#1a0a2e 0%,#000 100%);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#intro h1{color:#FFD700;font-size:3.2rem;text-shadow:0 0 40px rgba(255,150,0,0.8),0 4px 8px rgba(0,0,0,0.8);letter-spacing:8px;opacity:0;animation:fadeIn 2s 0.5s forwards}
 #intro p{color:#ccc;margin-top:15px;font-style:italic;opacity:0;animation:fadeIn 2s 2s forwards}
 #cards{display:flex;gap:15px;margin-top:30px;opacity:0;animation:fadeIn 1s 3s forwards}
-.card{padding:18px 24px;background:rgba(0,0,0,0.7);border:2px solid #555;border-radius:10px;cursor:pointer;text-align:center;transition:all 0.3s}
-.card:hover{border-color:#FFD700;transform:translateY(-5px);box-shadow:0 8px 25px rgba(255,215,0,0.3)}
+.card{padding:20px 28px;background:rgba(20,10,40,0.8);border:2px solid #555;border-radius:12px;cursor:pointer;text-align:center;transition:all 0.3s;backdrop-filter:blur(5px)}
+.card:hover{border-color:#FFD700;transform:translateY(-8px) scale(1.05);box-shadow:0 12px 35px rgba(255,215,0,0.4)}
 .card h3{font-size:1.1rem;margin-bottom:4px}
 .card span{color:#aaa;font-size:0.75rem}
 @keyframes fadeIn{to{opacity:1}}
 #hud{display:none;position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50}
 #hud>*{pointer-events:auto}
-#stats{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.75);border:1px solid #444;border-radius:8px;padding:10px 14px}
+#stats{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.8);border:1px solid #555;border-radius:10px;padding:12px 16px;backdrop-filter:blur(5px)}
 #stats h3{color:#FFD700;font-size:14px;margin-bottom:6px}
-.bar{width:180px;height:14px;background:#222;border-radius:7px;margin:4px 0;position:relative;overflow:hidden}
+.bar{width:180px;height:16px;background:#111;border-radius:8px;margin:4px 0;position:relative;overflow:hidden;border:1px solid #333}
 .bar-fill{height:100%;border-radius:7px;transition:width 0.3s}
-.bar-hp .bar-fill{background:linear-gradient(to right,#660000,#CC0000)}
-.bar-mp .bar-fill{background:linear-gradient(to right,#000066,#0044CC)}
-.bar-label{position:absolute;top:0;left:0;width:100%;text-align:center;font-size:10px;line-height:14px;color:#fff;text-shadow:1px 1px #000}
-#xpbar{width:180px;height:6px;background:#222;border-radius:3px;margin-top:5px}
-#xpfill{height:100%;background:#AA0;border-radius:3px;width:0%}
-#lvl{color:#FFD700;font-size:11px;margin-top:3px}
-#skills{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
-.sk{width:50px;height:50px;background:rgba(0,0,0,0.85);border:2px solid #555;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative}
-.sk:hover{border-color:#FFD700}
-.sk .i{font-size:16px}
-.sk .k{font-size:9px;color:#aaa}
-.sk .cd{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);border-radius:6px;display:none;line-height:50px;text-align:center;color:#fff;font-size:11px}
-#ebar{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);border:2px solid #800;border-radius:8px;padding:6px 16px;display:none;text-align:center}
-#ebar h4{color:#F44;font-size:13px}
-#ehp{width:200px;height:10px;background:#333;border-radius:5px;margin-top:4px}
-#ehpf{height:100%;background:linear-gradient(to right,#800,#F20);border-radius:5px;transition:width 0.2s}
-#log{position:absolute;bottom:90px;left:20px;max-width:300px;pointer-events:none}
-.msg{font-size:12px;padding:3px 0;text-shadow:1px 1px 2px #000;opacity:1;transition:opacity 1s}
-#map{position:absolute;top:10px;right:10px;width:140px;height:140px;border:2px solid #444;border-radius:4px;background:rgba(0,0,0,0.6)}
-#newbtn{position:absolute;top:160px;right:10px;padding:6px 12px;background:rgba(0,0,0,0.7);color:#FFD700;border:1px solid #FFD700;border-radius:6px;cursor:pointer;font-size:11px}
-#dlg{display:none;position:absolute;bottom:100px;left:50%;transform:translateX(-50%);width:450px;background:rgba(0,0,0,0.92);border:2px solid #FFD700;border-radius:12px;padding:18px;text-align:center}
-#dlg h3{color:#FFD700;margin-bottom:8px}
-#dlg p{color:#ccc;font-size:13px;margin-bottom:12px}
-#dlg button{padding:8px 20px;background:#222;color:#FFD700;border:1px solid #FFD700;border-radius:6px;cursor:pointer;margin:0 5px}
+.bar-hp .bar-fill{background:linear-gradient(to right,#8B0000,#FF2222)}
+.bar-mp .bar-fill{background:linear-gradient(to right,#000080,#2266FF)}
+.bar-label{position:absolute;top:0;left:0;width:100%;text-align:center;font-size:10px;line-height:16px;color:#fff;text-shadow:1px 1px #000;font-weight:bold}
+#xpbar{width:180px;height:8px;background:#111;border-radius:4px;margin-top:6px;border:1px solid #333}
+#xpfill{height:100%;background:linear-gradient(to right,#8B8B00,#FFD700);border-radius:3px;width:0%}
+#lvl{color:#FFD700;font-size:11px;margin-top:4px;font-weight:bold}
+#skills{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:10px}
+.sk{width:54px;height:54px;background:rgba(0,0,0,0.85);border:2px solid #555;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative;transition:all 0.2s}
+.sk:hover{border-color:#FFD700;transform:translateY(-3px)}
+.sk .i{font-size:18px;font-weight:bold}
+.sk .k{font-size:9px;color:#888}
+.sk .cd{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.75);border-radius:8px;display:none;line-height:54px;text-align:center;color:#fff;font-size:12px}
+#ebar{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);border:2px solid #880000;border-radius:10px;padding:8px 20px;display:none;text-align:center;backdrop-filter:blur(5px)}
+#ebar h4{color:#FF4444;font-size:14px}
+#ehp{width:220px;height:12px;background:#111;border-radius:6px;margin-top:5px;border:1px solid #333}
+#ehpf{height:100%;background:linear-gradient(to right,#880000,#FF2200);border-radius:5px;transition:width 0.2s}
+#log{position:absolute;bottom:90px;left:20px;max-width:320px;pointer-events:none}
+.msg{font-size:12px;padding:4px 0;text-shadow:1px 1px 3px #000;opacity:1;transition:opacity 1s}
+#map{position:absolute;top:10px;right:10px;width:150px;height:150px;border:2px solid #555;border-radius:8px;background:rgba(0,0,0,0.7)}
+#newbtn{position:absolute;top:172px;right:10px;padding:7px 14px;background:rgba(0,0,0,0.8);color:#FFD700;border:1px solid #FFD700;border-radius:8px;cursor:pointer;font-size:11px}
+#dlg{display:none;position:absolute;bottom:100px;left:50%;transform:translateX(-50%);width:480px;background:rgba(10,5,20,0.95);border:2px solid #FFD700;border-radius:14px;padding:20px;text-align:center;backdrop-filter:blur(8px)}
+#dlg h3{color:#FFD700;margin-bottom:10px;font-size:1.2rem}
+#dlg p{color:#ddd;font-size:13px;margin-bottom:14px;line-height:1.4}
+#dlg button{padding:9px 22px;background:#1a0a2e;color:#FFD700;border:1px solid #FFD700;border-radius:8px;cursor:pointer;margin:0 6px;font-size:12px;transition:all 0.2s}
+#dlg button:hover{background:#2a1a4e}
 </style>
 </head>
 <body>
 <div id="intro">
 <h1>TERRA-MEDIA</h1>
-<p>Clique em um heroi para iniciar</p>
+<p>Clique em um heroi para iniciar sua jornada</p>
 <div id="cards">
 <div class="card" onclick="start(0)"><h3 style="color:#FFD700">Bernardino</h3><span>Barbaro</span></div>
 <div class="card" onclick="start(1)"><h3 style="color:#48F">Bernardo</h3><span>Guerreiro</span></div>
@@ -64,7 +65,7 @@ canvas{display:block}
 <div id="stats"><h3 id="pname">Heroi</h3>
 <div class="bar bar-hp"><div class="bar-fill" id="hpf" style="width:100%"></div><div class="bar-label" id="hpl">100/100</div></div>
 <div class="bar bar-mp"><div class="bar-fill" id="mpf" style="width:100%"></div><div class="bar-label" id="mpl">50/50</div></div>
-<div id="xpbar"><div id="xpfill"></div></div><div id="lvl">Nivel 1</div></div>
+<div id="xpbar"><div id="xpfill"></div><div id="lvl">Nivel 1</div></div>
 <div id="ebar"><h4 id="ename"></h4><div id="ehp"><div id="ehpf"></div></div></div>
 <div id="skills">
 <div class="sk" onclick="skill(0)"><span class="i">I</span><span class="k">1</span><div class="cd"></div></div>
@@ -73,428 +74,156 @@ canvas{display:block}
 <div class="sk" onclick="skill(3)"><span class="i">IV</span><span class="k">4</span><div class="cd"></div></div>
 </div>
 <div id="log"></div>
-<canvas id="map" width="140" height="140"></canvas>
+<canvas id="map" width="150" height="150"></canvas>
+<button id="newbtn" onclick="location.reload()">Novo Personagem</button>
+<div id="dlg"><h3 id="dn"></h3><p id="dt"></p><button onclick="document.getElementById('dlg').style.display='none';msg('Quest aceita!')">Aceitar</button><button onclick="document.getElementById('dlg').style.display='none'">Fechar</button></div>
+</div>
 <script>
-// DATA
 const H=[
-{name:'Bernardino',cls:'Barbaro',hp:120,mp:30,atk:18,def:8,spd:5,color:0x8B4513,skills:['Golpe Brutal','Furia','Grito de Guerra','Regenerar']},
-{name:'Bernardo',cls:'Guerreiro',hp:150,mp:40,atk:14,def:14,spd:4,color:0x2255CC,skills:['Investida','Escudo','Provocar','Cura Divina']},
-{name:'Raphael',cls:'Arqueiro',hp:90,mp:50,atk:16,def:6,spd:7,color:0x44AA44,skills:['Flecha','Chuva de Flechas','Armadilha','Evasao']},
-{name:'Leticia',cls:'Maga',hp:80,mp:80,atk:20,def:5,spd:4,color:0xCC44FF,skills:['Bola de Fogo','Nevasca','Raio','Cura Arcana']}
+{name:'Bernardino',cls:'Barbaro',hp:120,mp:30,atk:18,def:8,spd:5,color:0xCC6622,skills:['Golpe Brutal','Furia','Grito de Guerra','Regenerar']},
+{name:'Bernardo',cls:'Guerreiro',hp:150,mp:40,atk:14,def:14,spd:4,color:0x3366CC,skills:['Investida','Escudo','Provocar','Cura Divina']},
+{name:'Raphael',cls:'Arqueiro',hp:90,mp:50,atk:16,def:6,spd:7,color:0x33AA55,skills:['Flecha','Chuva de Flechas','Armadilha','Evasao']},
+{name:'Leticia',cls:'Maga',hp:80,mp:80,atk:20,def:5,spd:4,color:0xAA44DD,skills:['Bola de Fogo','Nevasca','Raio','Cura Arcana']}
 ];
 const ED=[
-{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x3A5A2A},
-{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x3A5A2A},
-{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x3A5A2A},
-{name:'Nazgul',type:'nazgul',hp:120,atk:15,def:8,xp:80,color:0x111111},
-{name:'Nazgul',type:'nazgul',hp:120,atk:15,def:8,xp:80,color:0x111111},
-{name:'Gollum',type:'gollum',hp:40,atk:6,def:2,xp:40,color:0x8A9A60},
-{name:'Saruman',type:'saruman',hp:200,atk:20,def:12,xp:200,color:0xEEEEE},
-{name:'Smaug',type:'dragon',hp:500,atk:35,def:20,xp:500,color:0xA2200}
+{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x446633},
+{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x446633},
+{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x446633},
+{name:'Nazgul',type:'nazgul',hp:120,atk:15,def:8,xp:80,color:0x1a1a2e},
+{name:'Nazgul',type:'nazgul',hp:120,atk:15,def:8,xp:80,color:0x1a1a2e},
+{name:'Gollum',type:'gollum',hp:40,atk:6,def:2,xp:40,color:0x7A8A55},
+{name:'Saruman',type:'saruman',hp:200,atk:20,def:12,xp:200,color:0xDDDDD},
+{name:'Smaug',type:'dragon',hp:500,atk:35,def:20,xp:500,color:0xBB3311}
 ];
 const EP=[[25,25],[40,10],[-35,25],[55,-35],[-55,-45],[65,55],[-75,75],[90,-80]];
 const ND=[
-{name:'Gandalf',x:-12,z:-50,color:0xCCCCCC,quest:'Derrote 3 Orcs.'},
-{name:'Aragorn',x:12,z:-50,color:0x4A3010,quest:'Elimine 2 Nazgul.'},
-{name:'Legolas',x:-35,z:35,color:0x44AA44,quest:'Capture Gollum.'},
-{name:'Frodo',x:35,z:35,color:0x8B6914,quest:'Derrote Smaug!'}
+{name:'Gandalf',x:-12,z:-50,color:0xCCCCCC,quest:'Derrote 3 Orcs nas redondezas.'},
+{name:'Aragorn',x:12,z:-50,color:0x5A3A1A,quest:'Elimine 2 Nazgul nas planicies.'},
+{name:'Legolas',x:-35,z:35,color:0x44AA55,quest:'Rastreie e capture Gollum.'},
+{name:'Frodo',x:35,z:35,color:0x8B6914,quest:'Derrote o dragao Smaug!'}
 ];
 let sc,cam,renderer,player,pMesh,enemies=[],npcs=[],loot=[],target=null;
 let keys={},wt=0,moving=false,mounted=false,mMesh=null,baseSpd=0;
-let MAP=100,running=false,charIdx=0;
-// CEL SHADER
-const celVert=`varying vec3 vNormal;varying vec3 vPos;void main(){vNormal=normalize(normalMatrix*normal);vPos=(modelViewMatrix*vec4(position,1.0)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
-const celFrag=`uniform vec3 uColor;uniform vec3 uLight;varying vec3 vNormal;varying vec3 vPos;void main(){float d=dot(normalize(vNormal),normalize(uLight));float i=d>0.6?1.0:d>0.3?0.7:d>0.0?0.45:0.25;gl_FragColor=vec4(uColor*i,1.0);}`;
-function celMat(color){
-const c=new THREE.Color(color);
-return new THREE.ShaderMaterial({uniforms:{uColor:{value:c},uLight:{value:new THREE.Vector3(0.5,1.0,0.3).normalize()}},vertexShader:celVert,fragmentShader:celFrag});
-}
-// OUTLINE
-const outVert=`void main(){vec3 p=position+normal*0.03;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`;
-const outFrag=`void main(){gl_FragColor=vec4(0.0,0.0,0.0,1.0);}`;
-const outMat=new THREE.ShaderMaterial({vertexShader:outVert,fragmentShader:outFrag,side:THREE.BackSide});
-function addOutline(mesh){const o=mesh.clone();o.material=outMat;o.scale.multiplyScalar(1.05);mesh.parent.add(o);}
-// START
+let MAP=100,running=false,charIdx=0,camAngle=Math.PI,camDist=20;
+// CEL SHADER with rim light
+const celVert=`varying vec3 vNormal;varying vec3 vViewDir;void main(){vNormal=normalize(normalMatrix*normal);vec4 mvPos=modelViewMatrix*vec4(position,1.0);vViewDir=normalize(-mvPos.xyz);gl_Position=projectionMatrix*mvPos;}`;
+const celFrag=`uniform vec3 uColor;varying vec3 vNormal;varying vec3 vViewDir;void main(){vec3 light=normalize(vec3(0.5,1.0,0.3));float d=dot(normalize(vNormal),light);float i=d>0.5?1.0:d>0.2?0.65:d>-0.1?0.4:0.25;float rim=1.0-max(0.0,dot(normalize(vNormal),vViewDir));rim=smoothstep(0.55,1.0,rim)*0.4;vec3 col=uColor*i+vec3(1.0,0.9,0.8)*rim;gl_FragColor=vec4(col,1.0);}`;
+function celMat(color){const c=new THREE.Color(color);return new THREE.ShaderMaterial({uniforms:{uColor:{value:c}},vertexShader:celVert,fragmentShader:celFrag});}
 function start(ci){
-charIdx=ci;
-document.getElementById('intro').style.display='none';
-document.getElementById('hud').style.display='block';
-const h=H[ci];
-player={x:0,z:0,hp:h.hp,maxHp:h.hp,mp:h.mp,maxMp:h.mp,xp:0,xpNext:100,level:1,atk:h.atk,def:h.def,spd:h.spd,cd:[0,0,0,0]};
+charIdx=ci;document.getElementById('intro').style.display='none';document.getElementById('hud').style.display='block';
+const h=H[ci];player={x:0,z:0,hp:h.hp,maxHp:h.hp,mp:h.mp,maxMp:h.mp,xp:0,xpNext:100,level:1,atk:h.atk,def:h.def,spd:h.spd,cd:[0,0,0,0]};
 document.getElementById('pname').textContent=h.name+' - '+h.cls;
-init();
-running=true;
-msg('Bem-vindo, '+h.name+'!');
-msg('WASD: mover | 1-4: skills | Clique: alvo | E: NPC');
+init();running=true;msg('Bem-vindo, '+h.name+'!');msg('WASD mover | 1-4 skills | Clique alvo | E NPC | M montar');
 }
 function init(){
 sc=new THREE.Scene();
-sc.background=new THREE.Color(0x87CEEB);
-sc.fog=new THREE.FogExp2(0x87CEEB,0.008);
-// Camera
-cam=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,500);
-cam.position.set(0,12,-18);
-// Renderer
+sc.background=new THREE.Color(0x88CCEE);
+sc.fog=new THREE.FogExp2(0x88CCEE,0.006);
+cam=new THREE.PerspectiveCamera(55,window.innerWidth/window.innerHeight,0.1,500);
 renderer=new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(window.innerWidth,window.innerHeight);
-renderer.shadowMap.enabled=true;
-renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.3;
 document.body.appendChild(renderer.domElement);
-// Lights
-const sun=new THREE.DirectionalLight(0xFFEECC,1.5);
-sun.position.set(30,50,20);sun.castShadow=true;
-sun.shadow.mapSize.set(2048,2048);
-sun.shadow.camera.left=-80;sun.shadow.camera.right=80;
-sun.shadow.camera.top=80;sun.shadow.camera.bottom=-80;
+const sun=new THREE.DirectionalLight(0xFFF0DD,1.8);
+sun.position.set(40,60,30);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-100;sun.shadow.camera.right=100;sun.shadow.camera.top=100;sun.shadow.camera.bottom=-100;
 sc.add(sun);
-const amb=new THREE.HemisphereLight(0x88BBFF,0x445522,0.6);
-sc.add(amb);
-// Terrain
-const gGeo=new THREE.PlaneGeometry(MAP*2,MAP*2,40,40);
-gGeo.rotateX(-Math.PI/2);
-// Vertex colors for terrain variation
-const colors=[];
-for(let i=0;i<gGeo.attributes.position.count;i++){
-const r=0.15+Math.random()*0.15;
-const g=0.4+Math.random()*0.25;
-const b=0.05+Math.random()*0.1;
-colors.push(r,g,b);
+sc.add(new THREE.HemisphereLight(0x99CCFF,0x557744,0.7));
+// Terrain with hills
+const gGeo=new THREE.PlaneGeometry(MAP*2,MAP*2,60,60);gGeo.rotateX(-Math.PI/2);
+const pos=gGeo.attributes.position;const colors=[];
+for(let i=0;i<pos.count;i++){
+const x=pos.getX(i),z=pos.getZ(i);
+pos.setY(i,Math.sin(x*0.05)*1.5+Math.cos(z*0.04)*1.2+Math.random()*0.3);
+const g=0.35+Math.random()*0.2;colors.push(0.15+Math.random()*0.1,g,0.08+Math.random()*0.06);
 }
 gGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
-const gMat=new THREE.MeshLambertMaterial({vertexColors:true});
-const ground=new THREE.Mesh(gGeo,gMat);
-ground.receiveShadow=true;
-sc.add(ground);
-// Trees
-for(let i=0;i<100;i++){
-const x=(Math.random()-0.5)*MAP*1.8,z=(Math.random()-0.5)*MAP*1.8;
-if(Math.abs(x)<12&&Math.abs(z)<12)continue;
-mkTree(x,z);
-}
-// Rocks
-for(let i=0;i<50;i++){
-const x=(Math.random()-0.5)*MAP*1.8,z=(Math.random()-0.5)*MAP*1.8;
-mkRock(x,z);
-}
-// Castle
-mkCastle();
-// Player
-mkPlayer();
-// Enemies
+gGeo.computeVertexNormals();
+const ground=new THREE.Mesh(gGeo,new THREE.MeshLambertMaterial({vertexColors:true}));
+ground.receiveShadow=true;sc.add(ground);
+for(let i=0;i<100;i++){const x=(Math.random()-0.5)*MAP*1.8,z=(Math.random()-0.5)*MAP*1.8;if(Math.abs(x)<12&&Math.abs(z)<12)continue;mkTree(x,z);}
+for(let i=0;i<50;i++)mkRock((Math.random()-0.5)*MAP*1.8,(Math.random()-0.5)*MAP*1.8);
+mkCastle();mkPlayer();
 ED.forEach((d,i)=>{enemies.push(mkEnemy(d,EP[i][0],EP[i][1]));});
-// NPCs
 ND.forEach(d=>{npcs.push(mkNPC(d));});
-// Loot
-for(let i=0;i<15;i++){
-const x=(Math.random()-0.5)*MAP*1.5,z=(Math.random()-0.5)*MAP*1.5;
-const type=Math.random()<0.5?'hp':'mp';
-const m=new THREE.Mesh(new THREE.SphereGeometry(0.4,8,8),new THREE.MeshBasicMaterial({color:type==='hp'?0xFF3333:0x3333FF}));
-m.position.set(x,1.2,z);sc.add(m);
-loot.push({mesh:m,x,z,type,got:false});
-}
-// Input
+for(let i=0;i<15;i++){const x=(Math.random()-0.5)*MAP*1.5,z=(Math.random()-0.5)*MAP*1.5;const type=Math.random()<0.5?'hp':'mp';const m=new THREE.Mesh(new THREE.SphereGeometry(0.5,12,12),new THREE.MeshBasicMaterial({color:type==='hp'?0xFF4444:0x4444FF}));m.position.set(x,1.5,z);sc.add(m);loot.push({mesh:m,x,z,type,got:false});}
 window.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='Digit1')skill(0);if(e.code==='Digit2')skill(1);if(e.code==='Digit3')skill(2);if(e.code==='Digit4')skill(3);if(e.code==='KeyE')talkNPC();if(e.code==='KeyM')toggleMount();});
 window.addEventListener('keyup',e=>{keys[e.code]=false;});
 renderer.domElement.addEventListener('click',onClick);
 window.addEventListener('resize',()=>{cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
+let drag=false,lx=0;
+window.addEventListener('contextmenu',e=>e.preventDefault());
+window.addEventListener('mousedown',e=>{if(e.button===2){drag=true;lx=e.clientX;}});
+window.addEventListener('mouseup',()=>{drag=false;});
+window.addEventListener('mousemove',e=>{if(drag){camAngle+=(e.clientX-lx)*0.008;lx=e.clientX;}});
+window.addEventListener('wheel',e=>{camDist=Math.max(8,Math.min(40,camDist+e.deltaY*0.02));});
 animate();
 }
- // TREE
-function mkTree(x,z){
-const h=3+Math.random()*3;
-const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.15,0.35,h,8),celMat(0x6B3A1E));
-trunk.position.set(x,h/2,z);trunk.castShadow=true;sc.add(trunk);
-for(let i=0;i<2+Math.floor(Math.random()*2);i++){
-const s=2+Math.random()*1.5;
-const leaf=new THREE.Mesh(new THREE.SphereGeometry(s,8,6),celMat(0x228B22+Math.floor(Math.random()*0x224400)));
-leaf.position.set(x+(Math.random()-0.5)*1.2,h+1+i*1.2,z+(Math.random()-0.5)*1.2);
-leaf.castShadow=true;sc.add(leaf);
-}}
-// ROCK
-function mkRock(x,z){
-const s=0.5+Math.random()*1.5;
-const r=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),celMat(0x666666+Math.floor(Math.random()*0x222222)));
-r.position.set(x,s*0.5,z);r.rotation.set(Math.random(),Math.random(),Math.random());
-r.castShadow=true;sc.add(r);
-}
-// CASTLE
-function mkCastle(){
-const wm=celMat(0x8B7355);
-[[-15,-40],[15,-40],[15,-60],[-15,-60]].forEach(([tx,tz])=>{
-const t=new THREE.Mesh(new THREE.CylinderGeometry(2,2.2,14,8),wm);
-t.position.set(tx,7,tz);t.castShadow=true;sc.add(t);
-const rf=new THREE.Mesh(new THREE.ConeGeometry(3,4,8),celMat(0x8B0000));
-rf.position.set(tx,16,tz);sc.add(rf);
-});
-const wall=new THREE.Mesh(new THREE.BoxGeometry(32,8,2),wm);
-wall.position.set(0,4,-40);wall.castShadow=true;sc.add(wall);
-const wall2=wall.clone();wall2.position.set(0,4,-60);sc.add(wall2);
-const wall3=new THREE.Mesh(new THREE.BoxGeometry(2,8,22),wm);
-wall3.position.set(-15,4,-50);sc.add(wall3);
-const wall4=wall3.clone();wall4.position.set(15,4,-50);sc.add(wall4);
-}
-// PLAYER
+function mkTree(x,z){const h=4+Math.random()*4;const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.4,h,8),celMat(0x5C3317));trunk.position.set(x,h/2,z);trunk.castShadow=true;sc.add(trunk);for(let i=0;i<3;i++){const s=2.5+Math.random()*2;const leaf=new THREE.Mesh(new THREE.SphereGeometry(s,10,8),celMat(0x228B22+(Math.floor(Math.random()*0x335500))));leaf.position.set(x+(Math.random()-0.5)*1.5,h+1+i*1.5,z+(Math.random()-0.5)*1.5);leaf.castShadow=true;sc.add(leaf);}}
+function mkRock(x,z){const s=0.6+Math.random()*2;const r=new THREE.Mesh(new THREE.DodecahedronGeometry(s,1),celMat(0x777777+(Math.floor(Math.random()*0x222222))));r.position.set(x,s*0.4,z);r.rotation.set(Math.random(),Math.random(),0);r.castShadow=true;sc.add(r);}
+function mkCastle(){const wm=celMat(0x9B8B75);[[-15,-40],[15,-40],[15,-60],[-15,-60]].forEach(([tx,tz])=>{const t=new THREE.Mesh(new THREE.CylinderGeometry(2.2,2.5,16,10),wm);t.position.set(tx,8,tz);t.castShadow=true;sc.add(t);const rf=new THREE.Mesh(new THREE.ConeGeometry(3.2,5,10),celMat(0x992222));rf.position.set(tx,18.5,tz);sc.add(rf);});const w1=new THREE.Mesh(new THREE.BoxGeometry(34,10,2.5),wm);w1.position.set(0,5,-40);w1.castShadow=true;sc.add(w1);const w2=w1.clone();w2.position.z=-60;sc.add(w2);const w3=new THREE.Mesh(new THREE.BoxGeometry(2.5,10,22),wm);w3.position.set(-15,5,-50);sc.add(w3);const w4=w3.clone();w4.position.x=15;sc.add(w4);}
 let limbs={};
-function mkPlayer(){
-const h=H[charIdx];
-pMesh=new THREE.Group();
-// Body
-const body=new THREE.Mesh(new THREE.BoxGeometry(0.9,1.2,0.5),celMat(h.color));
-body.position.y=1.6;body.castShadow=true;pMesh.add(body);
-// Head
-const head=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.6,0.6),celMat(0xDEB887));
-head.position.y=2.5;head.castShadow=true;pMesh.add(head);
-// Eyes
-const eyeM=new THREE.MeshBasicMaterial({color:0xFFFFFF});
-const pupilM=new THREE.MeshBasicMaterial({color:0x000000});
-[-0.12,0.12].forEach(ex=>{
-const e=new THREE.Mesh(new THREE.SphereGeometry(0.06,6,6),eyeM);
-e.position.set(ex,2.55,0.3);pMesh.add(e);
-const p=new THREE.Mesh(new THREE.SphereGeometry(0.03,6,6),pupilM);
-p.position.set(ex,2.55,0.33);pMesh.add(p);
-});
-// Hair
-const hair=new THREE.Mesh(new THREE.BoxGeometry(0.65,0.25,0.65),celMat(0x1A0A00));
-hair.position.y=2.8;pMesh.add(hair);
-// Arms
-const lAP=new THREE.Group();lAP.position.set(-0.65,2.1,0);pMesh.add(lAP);
-const lA=new THREE.Mesh(new THREE.BoxGeometry(0.25,0.9,0.25),celMat(h.color));
-lA.position.y=-0.45;lA.castShadow=true;lAP.add(lA);
-const lH=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.18),celMat(0xDEB887));
-lH.position.y=-0.95;lAP.add(lH);
-const rAP=new THREE.Group();rAP.position.set(0.65,2.1,0);pMesh.add(rAP);
-const rA=new THREE.Mesh(new THREE.BoxGeometry(0.25,0.9,0.25),celMat(h.color));
-rA.position.y=-0.45;rA.castShadow=true;rAP.add(rA);
-const rH=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.18),celMat(0xDEB887));
-rH.position.y=-0.95;rAP.add(rH);
-// Legs
+function mkPlayer(){const h=H[charIdx];pMesh=new THREE.Group();
+const body=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.5,1.2,10),celMat(h.color));body.position.y=1.6;body.castShadow=true;pMesh.add(body);
+const head=new THREE.Mesh(new THREE.SphereGeometry(0.45,12,10),celMat(0xF5C6A0));head.position.y=2.6;head.castShadow=true;pMesh.add(head);
+const eyeM=new THREE.MeshBasicMaterial({color:0xFFFFFF});const pupM=new THREE.MeshBasicMaterial({color:0x222222});
+[-0.15,0.15].forEach(ex=>{const e=new THREE.Mesh(new THREE.SphereGeometry(0.08,8,8),eyeM);e.position.set(ex,2.65,0.35);pMesh.add(e);const p=new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8),pupM);p.position.set(ex,2.65,0.4);pMesh.add(p);});
+const hair=new THREE.Mesh(new THREE.SphereGeometry(0.48,12,10,0,Math.PI*2,0,Math.PI*0.6),celMat(0x2A1506));hair.position.y=2.75;hair.rotation.x=-0.2;pMesh.add(hair);
+const lAP=new THREE.Group();lAP.position.set(-0.6,2.0,0);pMesh.add(lAP);
+const lA=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.14,0.9,8),celMat(h.color));lA.position.y=-0.45;lA.castShadow=true;lAP.add(lA);
+const lH=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),celMat(0xF5C6A0));lH.position.y=-0.95;lAP.add(lH);
+const rAP=new THREE.Group();rAP.position.set(0.6,2.0,0);pMesh.add(rAP);
+const rA=new THREE.Mesh(new THREE.CylinderGeometry(0.12,0.14,0.9,8),celMat(h.color));rA.position.y=-0.45;rA.castShadow=true;rAP.add(rA);
+const rH=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),celMat(0xF5C6A0));rH.position.y=-0.95;rAP.add(rH);
 const lLP=new THREE.Group();lLP.position.set(-0.2,1.0,0);pMesh.add(lLP);
-const lL=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.9,0.3),celMat(h.color));
-lL.position.y=-0.45;lL.castShadow=true;lLP.add(lL);
+const lL=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.16,0.9,8),celMat(h.color));lL.position.y=-0.45;lL.castShadow=true;lLP.add(lL);
 const rLP=new THREE.Group();rLP.position.set(0.2,1.0,0);pMesh.add(rLP);
-const rL=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.9,0.3),celMat(h.color));
-rL.position.y=-0.45;rL.castShadow=true;rLP.add(rL);
-// Boots
-[-0.2,0.2].forEach(bx=>{
-const b=new THREE.Mesh(new THREE.BoxGeometry(0.32,0.2,0.4),celMat(0x3D1F00));
-b.position.set(bx,0.1,0.05);pMesh.add(b);
-});
-// Weapon
-if(charIdx===0){const ax=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.5),celMat(0xCCCCDD));ax.position.set(0,0.3,0.2);rAP.add(ax);}
+const rL=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.16,0.9,8),celMat(h.color));rL.position.y=-0.45;rL.castShadow=true;rLP.add(rL);
+[-0.2,0.2].forEach(bx=>{const b=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.18,0.25,8),celMat(0x3D1F00));b.position.set(bx,0.12,0);pMesh.add(b);});
+if(charIdx===0){const ax=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.6,0.4),celMat(0xBBBCC));ax.position.set(0,0.2,0.2);rAP.add(ax);}
 else if(charIdx===1){const sw=new THREE.Mesh(new THREE.BoxGeometry(0.06,1.4,0.04),celMat(0xCCCCDD));sw.position.set(0,-0.1,0.2);rAP.add(sw);}
-else if(charIdx===2){const bw=new THREE.Mesh(new THREE.TorusGeometry(0.4,0.03,8,16),celMat(0x8B5A2B));bw.position.set(0,-0.3,0.2);bw.rotation.z=Math.PI/2;lAP.add(bw);}
-else{const st=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,2),celMat(0x5C3317));st.position.set(0,0.2,0.1);rAP.add(st);const cr=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshBasicMaterial({color:0xAA22FF}));cr.position.set(0,1.3,0.1);rAP.add(cr);}
-limbs={lAP,rAP,lLP,rLP};
-pMesh.scale.set(2.2,2.2,2.2);
-pMesh.position.set(0,0,0);
-sc.add(pMesh);
-}
-// ENEMY
-function mkEnemy(data,x,z){
-const g=new THREE.Group();
-const mat=celMat(data.color);
-const meshes=[];
-if(data.type==='dragon'){
-const body=new THREE.Mesh(new THREE.BoxGeometry(4,3,7),mat);body.position.y=5;body.castShadow=true;g.add(body);meshes.push(body);
-const head=new THREE.Mesh(new THREE.BoxGeometry(1.5,1.2,2.5),mat);head.position.set(0,7,6);head.castShadow=true;g.add(head);meshes.push(head);
-[-1,1].forEach(s=>{const w=new THREE.Mesh(new THREE.BoxGeometry(8,0.2,4),mat);w.position.set(s*6,5.5,0);g.add(w);meshes.push(w);});
-for(let t=0;t<5;t++){const sg=new THREE.Mesh(new THREE.BoxGeometry(1.2-t*0.2,1-t*0.15,1.5),mat);sg.position.set(0,4.5-t*0.2,-4-t*1.5);g.add(sg);meshes.push(sg);}
-const em=new THREE.MeshBasicMaterial({color:0xFF6600});
-[-0.5,0.5].forEach(ex=>{const e=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.15,0.1),em);e.position.set(ex,7.5,7.3);g.add(e);meshes.push(e);});
-g.scale.set(2.5,2.5,2.5);
-}else{
-const sc2=data.type==='gollum'?0.7:data.type==='saruman'?1.1:1;
-const body=new THREE.Mesh(new THREE.BoxGeometry(0.8*sc2,1.1*sc2,0.45*sc2),mat);body.position.y=1.55*sc2;body.castShadow=true;g.add(body);meshes.push(body);
-const head=new THREE.Mesh(new THREE.BoxGeometry(0.55*sc2,0.55*sc2,0.5*sc2),mat);head.position.y=2.4*sc2;g.add(head);meshes.push(head);
-const em=new THREE.MeshBasicMaterial({color:0xFF0000});
-[-0.1,0.1].forEach(ex=>{const e=new THREE.Mesh(new THREE.SphereGeometry(0.06*sc2,6,6),em);e.position.set(ex*sc2,2.5*sc2,0.25*sc2);g.add(e);meshes.push(e);});
-[-0.5,0.5].forEach(ax=>{const a=new THREE.Mesh(new THREE.BoxGeometry(0.22*sc2,0.8*sc2,0.22*sc2),mat);a.position.set(ax*sc2,1.4*sc2,0);g.add(a);meshes.push(a);});
-[-0.18,0.18].forEach(lx=>{const l=new THREE.Mesh(new THREE.BoxGeometry(0.28*sc2,0.85*sc2,0.28*sc2),mat);l.position.set(lx*sc2,0.45*sc2,0);g.add(l);meshes.push(l);});
-if(data.type==='orc'){const sw=new THREE.Mesh(new THREE.BoxGeometry(0.06,1.0,0.03),celMat(0x555555));sw.position.set(0.6*sc2,1.5*sc2,0.2);g.add(sw);meshes.push(sw);}
-if(data.type==='nazgul'){const hood=new THREE.Mesh(new THREE.BoxGeometry(0.6*sc2,0.4*sc2,0.6*sc2),mat);hood.position.y=2.7*sc2;g.add(hood);meshes.push(hood);}
-if(data.type==='saruman'){const orb=new THREE.Mesh(new THREE.SphereGeometry(0.15),new THREE.MeshBasicMaterial({color:0x8800FF}));orb.position.set(0.5,2.8,0);g.add(orb);meshes.push(orb);}
-g.scale.set(2.2,2.2,2.2);
-}
-g.position.set(x,0,z);sc.add(g);
-return{...data,mesh:g,meshes,x,z,hp:data.hp,maxHp:data.hp,alive:true,atkT:0};
-}
-// NPC
-function mkNPC(data){
-const g=new THREE.Group();
-const mat=celMat(data.color);
-const body=new THREE.Mesh(new THREE.BoxGeometry(0.8,1.2,0.5),mat);body.position.y=1.55;g.add(body);
-const head=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.6,0.55),celMat(0xDEB887));head.position.y=2.5;g.add(head);
-[-0.5,0.5].forEach(ax=>{const a=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.8,0.22),mat);a.position.set(ax,1.5,0);g.add(a);});
-[-0.18,0.18].forEach(lx=>{const l=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.85,0.28),mat);l.position.set(lx,0.45,0);g.add(l);});
-// Quest marker
-const qm=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.6,0.3),new THREE.MeshBasicMaterial({color:0xFFDD00}));
-qm.position.y=4;g.add(qm);
-if(data.name==='Gandalf'){const hat=new THREE.Mesh(new THREE.ConeGeometry(0.4,1,6),mat);hat.position.y=3.2;g.add(hat);}
-if(data.name==='Frodo')g.scale.set(1.8,1.8,1.8);else g.scale.set(2.2,2.2,2.2);
-g.position.set(data.x,0,data.z);sc.add(g);
-return{...data,mesh:g,qm};
-}
-// CLICK TARGET
-function onClick(e){
-const mouse=new THREE.Vector2((e.clientX/window.innerWidth)*2-1,-(e.clientY/window.innerHeight)*2+1);
-const ray=new THREE.Raycaster();ray.setFromCamera(mouse,cam);
-const hits=ray.intersectObjects(sc.children,true);
-if(hits.length>0){
-let found=null;
-enemies.forEach(en=>{if(!en.alive)return;en.meshes.forEach(m=>{if(hits.find(h=>h.object===m))found=en;});});
-if(found){target=found;showEnemy(found);msg('Alvo: '+found.name);}
-}
-}
-// GAME LOOP
-function animate(){
-requestAnimationFrame(animate);
-if(!running)return;
-const dt=0.016;
-// Player movement
-const spd=player.spd*dt*6;
-let mx=0,mz=0;
-const angle=Math.atan2(cam.position.x-pMesh.position.x,cam.position.z-pMesh.position.z);
-if(keys['KeyW']){mx+=Math.sin(angle)*spd;mz+=Math.cos(angle)*spd;}
-if(keys['KeyS']){mx-=Math.sin(angle)*spd;mz-=Math.cos(angle)*spd;}
-if(keys['KeyA']){mx+=Math.cos(angle)*spd;mz-=Math.sin(angle)*spd;}
-if(keys['KeyD']){mx-=Math.cos(angle)*spd;mz+=Math.sin(angle)*spd;}
+else if(charIdx===2){const bw=new THREE.Mesh(new THREE.TorusGeometry(0.4,0.04,8,16),celMat(0x8B5A2B));bw.position.set(0,-0.3,0.2);bw.rotation.z=Math.PI/2;lAP.add(bw);}
+else{const st=new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,2.2,8),celMat(0x5C3317));st.position.set(0,0.3,0.1);rAP.add(st);const cr=new THREE.Mesh(new THREE.SphereGeometry(0.15,10,10),new THREE.MeshBasicMaterial({color:0xB33FF}));cr.position.set(0,1.5,0.1);rAP.add(cr);}
+limbs={lAP,rAP,lLP,rLP};pMesh.scale.set(2.5,2.5,2.5);sc.add(pMesh);}
+function mkEnemy(data,x,z){const g=new THREE.Group();const mat=celMat(data.color);const meshes=[];
+if(data.type==='dragon'){const body=new THREE.Mesh(new THREE.CylinderGeometry(1.5,2,7,10),mat);body.position.y=5;body.rotation.x=Math.PI/2;body.castShadow=true;g.add(body);meshes.push(body);const head=new THREE.Mesh(new THREE.SphereGeometry(1.2,10,8),mat);head.position.set(0,6,5);head.castShadow=true;g.add(head);meshes.push(head);[-1,1].forEach(s=>{const w=new THREE.Mesh(new THREE.BoxGeometry(8,0.2,4),mat);w.position.set(s*5,5.5,0);g.add(w);meshes.push(w);});const em=new THREE.MeshBasicMaterial({color:0xFF6600});[-0.4,0.4].forEach(ex=>{const e=new THREE.Mesh(new THREE.SphereGeometry(0.2,8,8),em);e.position.set(ex,6.5,5.8);g.add(e);meshes.push(e);});g.scale.set(2.8,2.8,2.8);}
+else{const sc2=data.type==='gollum'?0.7:data.type==='saruman'?1.1:1;const body=new THREE.Mesh(new THREE.CylinderGeometry(0.35*sc2,0.4*sc2,1.1*sc2,10),mat);body.position.y=1.55*sc2;body.castShadow=true;g.add(body);meshes.push(body);const head=new THREE.Mesh(new THREE.SphereGeometry(0.35*sc2,10,8),mat);head.position.y=2.4*sc2;g.add(head);meshes.push(head);const em=new THREE.MeshBasicMaterial({color:0xFF0000});[-0.1,0.1].forEach(ex=>{const e=new THREE.Mesh(new THREE.SphereGeometry(0.06*sc2,8,8),em);e.position.set(ex*sc2,2.5*sc2,0.3*sc2);g.add(e);meshes.push(e);});[-0.45,0.45].forEach(ax=>{const a=new THREE.Mesh(new THREE.CylinderGeometry(0.1*sc2,0.12*sc2,0.8*sc2,8),mat);a.position.set(ax*sc2,1.4*sc2,0);g.add(a);meshes.push(a);});[-0.15,0.15].forEach(lx=>{const l=new THREE.Mesh(new THREE.CylinderGeometry(0.12*sc2,0.14*sc2,0.85*sc2,8),mat);l.position.set(lx*sc2,0.45*sc2,0);g.add(l);meshes.push(l);});
+if(data.type==='orc'){const sw=new THREE.Mesh(new THREE.BoxGeometry(0.06,1.0,0.04),celMat(0x666666));sw.position.set(0.5*sc2,1.5*sc2,0.2);g.add(sw);meshes.push(sw);}
+if(data.type==='nazgul'){const clk=new THREE.Mesh(new THREE.ConeGeometry(0.5*sc2,0.8*sc2,8),mat);clk.position.y=2.8*sc2;g.add(clk);meshes.push(clk);}
+if(data.type==='saruman'){const orb=new THREE.Mesh(new THREE.SphereGeometry(0.18),new THREE.MeshBasicMaterial({color:0x9933FF}));orb.position.set(0.5,2.8,0);g.add(orb);meshes.push(orb);}
+g.scale.set(2.2,2.2,2.2);}
+g.position.set(x,0,z);sc.add(g);return{...data,mesh:g,meshes,x,z,hp:data.hp,maxHp:data.hp,alive:true,atkT:0};}
+function mkNPC(data){const g=new THREE.Group();const mat=celMat(data.color);const body=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.45,1.2,10),mat);body.position.y=1.55;g.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(0.4,10,8),celMat(0xF5C6A0));head.position.y=2.5;g.add(head);const qm=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.7,0.3),new THREE.MeshBasicMaterial({color:0xFFDD00}));qm.position.y=4;g.add(qm);if(data.name==='Gandalf'){const hat=new THREE.Mesh(new THREE.ConeGeometry(0.45,1.2,8),celMat(0xCCCCCC));hat.position.y=3.3;g.add(hat);}g.scale.set(2.2,2.2,2.2);g.position.set(data.x,0,data.z);sc.add(g);return{...data,mesh:g,qm};}
+function onClick(e){const mouse=new THREE.Vector2((e.clientX/window.innerWidth)*2-1,-(e.clientY/window.innerHeight)*2+1);const ray=new THREE.Raycaster();ray.setFromCamera(mouse,cam);const hits=ray.intersectObjects(sc.children,true);if(hits.length){let f=null;enemies.forEach(en=>{if(!en.alive)return;en.meshes.forEach(m=>{if(hits.find(h=>h.object===m))f=en;});});if(f){target=f;showEnemy(f);msg('Alvo: '+f.name);}}}
+function animate(){requestAnimationFrame(animate);if(!running)return;const dt=0.016;
+const spd=player.spd*dt*6;let mx=0,mz=0;
+const ang=camAngle;
+if(keys['KeyW']){mx+=Math.sin(ang)*spd;mz+=Math.cos(ang)*spd;}
+if(keys['KeyS']){mx-=Math.sin(ang)*spd;mz-=Math.cos(ang)*spd;}
+if(keys['KeyA']){mx+=Math.cos(ang)*spd;mz-=Math.sin(ang)*spd;}
+if(keys['KeyD']){mx-=Math.cos(ang)*spd;mz+=Math.sin(ang)*spd;}
 moving=(mx!==0||mz!==0);
-if(moving){
-player.x+=mx;player.z+=mz;
-pMesh.position.x=player.x;pMesh.position.z=player.z;
-pMesh.rotation.y=Math.atan2(mx,mz);
-}
-// Walk animation
+if(moving){player.x+=mx;player.z+=mz;pMesh.position.x=player.x;pMesh.position.z=player.z;pMesh.rotation.y=Math.atan2(mx,mz);}
+cam.position.x=player.x+Math.sin(camAngle)*camDist;cam.position.z=player.z+Math.cos(camAngle)*camDist;cam.position.y=12;cam.lookAt(player.x,3,player.z);
 wt+=dt*player.spd*8;
-if(moving){
-const sw=Math.sin(wt)*0.8;
-limbs.lAP.rotation.x=sw;limbs.rAP.rotation.x=-sw;
-limbs.lLP.rotation.x=-sw*0.7;limbs.rLP.rotation.x=sw*0.7;
-}else{
-const b=Math.sin(wt*0.5)*0.06;
-limbs.lAP.rotation.x=b;limbs.rAP.rotation.x=-b;
-limbs.lLP.rotation.x*=0.9;limbs.rLP.rotation.x*=0.9;
-}
-// Camera follow
-cam.position.x=pMesh.position.x+Math.sin(camAngle)*camDist;
-cam.position.z=pMesh.position.z+Math.cos(camAngle)*camDist;
-cam.position.y=pMesh.position.y+10;
-cam.lookAt(pMesh.position.x,pMesh.position.y+3,pMesh.position.z);
-// Enemies AI
-enemies.forEach(e=>{
-if(!e.alive)return;
-const dx=player.x-e.x,dz=player.z-e.z;
-const dist=Math.sqrt(dx*dx+dz*dz);
-if(dist<20&&dist>3){const s=2*dt;e.x+=(dx/dist)*s;e.z+=(dz/dist)*s;e.mesh.position.x=e.x;e.mesh.position.z=e.z;e.mesh.rotation.y=Math.atan2(dx,dz);}
-if(dist<4){e.atkT-=dt;if(e.atkT<=0){const dmg=Math.max(1,e.atk-player.def+Math.floor(Math.random()*3));player.hp=Math.max(0,player.hp-dmg);msg(e.name+' ataca: -'+dmg+' HP');e.atkT=2;if(player.hp<=0){running=false;msg('GAME OVER');}}}
-});
-// Loot
-loot.forEach(l=>{
-if(l.got)return;
-l.mesh.position.y=1.2+Math.sin(Date.now()*0.003+l.x)*0.3;
-l.mesh.rotation.y+=0.02;
-const dist=Math.sqrt((l.x-player.x)**2+(l.z-player.z)**2);
-if(dist<3){l.got=true;sc.remove(l.mesh);
-if(l.type==='hp'){const h=Math.floor(player.maxHp*0.2);player.hp=Math.min(player.maxHp,player.hp+h);msg('Pocao HP: +'+h);}
-else{const m=Math.floor(player.maxMp*0.3);player.mp=Math.min(player.maxMp,player.mp+m);msg('Pocao MP: +'+m);}}
-});
-// NPC markers bob
-npcs.forEach(n=>{n.qm.position.y=4+Math.sin(Date.now()*0.003)*0.3;});
-// Mount
+if(moving){const sw=Math.sin(wt)*0.8;limbs.lAP.rotation.x=sw;limbs.rAP.rotation.x=-sw;limbs.lLP.rotation.x=-sw*0.7;limbs.rLP.rotation.x=sw*0.7;}
+else{const b=Math.sin(wt*0.5)*0.06;limbs.lAP.rotation.x=b;limbs.rAP.rotation.x=-b;limbs.lLP.rotation.x*=0.9;limbs.rLP.rotation.x*=0.9;}
+enemies.forEach(e=>{if(!e.alive)return;const dx=player.x-e.x,dz=player.z-e.z,dist=Math.sqrt(dx*dx+dz*dz);if(dist<22&&dist>3){const s=2.5*dt;e.x+=(dx/dist)*s;e.z+=(dz/dist)*s;e.mesh.position.x=e.x;e.mesh.position.z=e.z;e.mesh.rotation.y=Math.atan2(dx,dz);}if(dist<4){e.atkT-=dt;if(e.atkT<=0){const dmg=Math.max(1,e.atk-player.def+Math.floor(Math.random()*3));player.hp=Math.max(0,player.hp-dmg);msg(e.name+' ataca: -'+dmg);e.atkT=2;if(player.hp<=0){running=false;msg('GAME OVER - Recarregue');}}}});
+loot.forEach(l=>{if(l.got)return;l.mesh.position.y=1.5+Math.sin(Date.now()*0.004+l.x)*0.4;l.mesh.rotation.y+=0.03;const d=Math.sqrt((l.x-player.x)**2+(l.z-player.z)**2);if(d<3){l.got=true;sc.remove(l.mesh);if(l.type==='hp'){const h=Math.floor(player.maxHp*0.25);player.hp=Math.min(player.maxHp,player.hp+h);msg('Pocao HP +'+h);}else{const m=Math.floor(player.maxMp*0.3);player.mp=Math.min(player.maxMp,player.mp+m);msg('Pocao MP +'+m);}}});
+npcs.forEach(n=>{n.qm.position.y=4+Math.sin(Date.now()*0.003)*0.4;n.qm.rotation.y+=0.02;});
 if(mounted&&mMesh){mMesh.position.x=player.x;mMesh.position.z=player.z;mMesh.rotation.y=pMesh.rotation.y;}
-// Cooldowns
-player.cd=player.cd.map(c=>Math.max(0,c-dt));
-// HUD
-updateHUD();
-updateMap();
-renderer.render(sc,cam);
-}
-// CAMERA CONTROL
-let camAngle=Math.PI,camDist=18;
-window.addEventListener('contextmenu',e=>e.preventDefault());
-let dragging=false,lastX=0;
-window.addEventListener('mousedown',e=>{if(e.button===2){dragging=true;lastX=e.clientX;}});
-window.addEventListener('mouseup',e=>{if(e.button===2)dragging=false;});
-window.addEventListener('mousemove',e=>{if(dragging){camAngle+=(e.clientX-lastX)*0.01;lastX=e.clientX;}});
-window.addEventListener('wheel',e=>{camDist=Math.max(8,Math.min(40,camDist+e.deltaY*0.02));});
-// SKILLS
+player.cd=player.cd.map(c=>Math.max(0,c-dt));updateHUD();updateMap();renderer.render(sc,cam);}
 const SCD=[1.5,8,12,15],SMP=[0,10,15,20];
-function skill(i){
-if(player.cd[i]>0)return;
-if(player.mp<SMP[i]){msg('Mana insuficiente!');return;}
-if(!target||!target.alive){
-let near=null,nd=20;
-enemies.forEach(e=>{if(!e.alive)return;const d=Math.sqrt((e.x-player.x)**2+(e.z-player.z)**2);if(d<nd){near=e;nd=d;}});
-if(near){target=near;showEnemy(near);}else{msg('Sem alvo!');return;}
-}
-const dist=Math.sqrt((target.x-player.x)**2+(target.z-player.z)**2);
-const range=charIdx===2?20:charIdx===3?18:5;
-if(dist>range){msg('Muito longe!');return;}
-player.mp=Math.max(0,player.mp-SMP[i]);
-player.cd[i]=SCD[i];
-let dmg=0;
-if(i===0)dmg=Math.max(1,player.atk-target.def+Math.floor(Math.random()*5));
-else if(i===1)dmg=Math.max(1,player.atk*2-target.def+Math.floor(Math.random()*8));
-else if(i===2)dmg=Math.max(1,Math.floor(player.atk*1.5)+Math.floor(Math.random()*6));
-else{player.hp=Math.min(player.maxHp,player.hp+Math.floor(player.maxHp*0.3));msg(H[charIdx].skills[3]+': Curou!');return;}
-target.hp-=dmg;
-msg(H[charIdx].skills[i]+': -'+dmg+' em '+target.name);
-if(target.hp<=0){target.alive=false;target.meshes.forEach(m=>sc.remove(m));sc.remove(target.mesh);player.xp+=target.xp;msg(target.name+' derrotado! +'+target.xp+' XP');lvlUp();target=null;document.getElementById('ebar').style.display='none';}
-}
-function lvlUp(){
-while(player.xp>=player.xpNext){player.xp-=player.xpNext;player.level++;player.xpNext=Math.floor(player.xpNext*1.5);player.maxHp+=15;player.hp=player.maxHp;player.maxMp+=5;player.mp=player.maxMp;player.atk+=3;player.def+=2;msg('LEVEL UP! Nivel '+player.level);}
-}
-// NPC
-function talkNPC(){
-let close=null,cd=8;
-npcs.forEach(n=>{const d=Math.sqrt((n.x-player.x)**2+(n.z-player.z)**2);if(d<cd){close=n;cd=d;}});
-if(!close)return;
-document.getElementById('dn').textContent=close.name;
-document.getElementById('dt').textContent=close.quest;
-document.getElementById('dlg').style.display='block';
-msg('Quest: '+close.quest);
-}
-// MOUNT
-function toggleMount(){
-if(mounted){mounted=false;if(mMesh){sc.remove(mMesh);mMesh=null;}player.spd=baseSpd;msg('Desmontou.');}
-else{mounted=true;baseSpd=player.spd;player.spd=baseSpd*2.2;
-mMesh=new THREE.Group();
-const bm=celMat(0x6B4226);
-const body=new THREE.Mesh(new THREE.BoxGeometry(1.2,1,2.5),bm);body.position.y=1.5;mMesh.add(body);
-const head=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.6,1),bm);head.position.set(0,2.2,1.5);mMesh.add(head);
-[[-0.4,0.8],[-0.4,-0.8],[0.4,0.8],[0.4,-0.8]].forEach(([lx,lz])=>{const l=new THREE.Mesh(new THREE.BoxGeometry(0.2,1.2,0.2),bm);l.position.set(lx,0.6,lz);mMesh.add(l);});
-mMesh.scale.set(2,2,2);mMesh.position.set(player.x,0,player.z);sc.add(mMesh);
-msg('Montou! Velocidade dobrada!');}
-}
-// HUD
-function updateHUD(){
-document.getElementById('hpf').style.width=(player.hp/player.maxHp*100)+'%';
-document.getElementById('hpl').textContent=player.hp+'/'+player.maxHp;
-document.getElementById('mpf').style.width=(player.mp/player.maxMp*100)+'%';
-document.getElementById('mpl').textContent=Math.floor(player.mp)+'/'+player.maxMp;
-document.getElementById('xpfill').style.width=(player.xp/player.xpNext*100)+'%';
-document.getElementById('lvl').textContent='Nivel '+player.level;
-document.querySelectorAll('.sk').forEach((b,i)=>{const cd=b.querySelector('.cd');if(player.cd[i]>0){cd.style.display='block';cd.textContent=player.cd[i].toFixed(1);}else cd.style.display='none';});
-if(target&&target.alive){document.getElementById('ebar').style.display='block';document.getElementById('ename').textContent=target.name;document.getElementById('ehpf').style.width=(target.hp/target.maxHp*100)+'%';}
-}
+function skill(i){if(player.cd[i]>0)return;if(player.mp<SMP[i]){msg('Mana insuficiente!');return;}if(!target||!target.alive){let near=null,nd=20;enemies.forEach(e=>{if(!e.alive)return;const d=Math.sqrt((e.x-player.x)**2+(e.z-player.z)**2);if(d<nd){near=e;nd=d;}});if(near){target=near;showEnemy(near);}else{msg('Sem alvo!');return;}}const dist=Math.sqrt((target.x-player.x)**2+(target.z-player.z)**2);const range=charIdx===2?20:charIdx===3?18:5;if(dist>range){msg('Muito longe!');return;}player.mp=Math.max(0,player.mp-SMP[i]);player.cd[i]=SCD[i];let dmg=0;if(i===0)dmg=Math.max(1,player.atk-target.def+Math.floor(Math.random()*5));else if(i===1)dmg=Math.max(1,player.atk*2-target.def+Math.floor(Math.random()*8));else if(i===2)dmg=Math.max(1,Math.floor(player.atk*1.5)+Math.floor(Math.random()*6));else{player.hp=Math.min(player.maxHp,player.hp+Math.floor(player.maxHp*0.3));msg(H[charIdx].skills[3]+': Curou!');return;}target.hp-=dmg;msg(H[charIdx].skills[i]+': -'+dmg+' em '+target.name);if(target.hp<=0){target.alive=false;target.meshes.forEach(m=>{m.geometry.dispose();m.material.dispose();});sc.remove(target.mesh);player.xp+=target.xp;msg(target.name+' derrotado! +'+target.xp+' XP');lvlUp();target=null;document.getElementById('ebar').style.display='none';}}
+function lvlUp(){while(player.xp>=player.xpNext){player.xp-=player.xpNext;player.level++;player.xpNext=Math.floor(player.xpNext*1.5);player.maxHp+=15;player.hp=player.maxHp;player.maxMp+=5;player.mp=player.maxMp;player.atk+=3;player.def+=2;msg('LEVEL UP! Nivel '+player.level);}}
+function talkNPC(){let close=null,cd=8;npcs.forEach(n=>{const d=Math.sqrt((n.x-player.x)**2+(n.z-player.z)**2);if(d<cd){close=n;cd=d;}});if(!close)return;document.getElementById('dn').textContent=close.name;document.getElementById('dt').textContent=close.quest;document.getElementById('dlg').style.display='block';}
+function toggleMount(){if(mounted){mounted=false;if(mMesh){sc.remove(mMesh);mMesh=null;}player.spd=baseSpd;msg('Desmontou.');}else{mounted=true;baseSpd=player.spd;player.spd=baseSpd*2.2;mMesh=new THREE.Group();const bm=celMat(0x7B4B2A);const body=new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.6,2.5,10),bm);body.position.y=1.5;body.rotation.x=Math.PI/2;mMesh.add(body);const head=new THREE.Mesh(new THREE.SphereGeometry(0.4,8,8),bm);head.position.set(0,2,1.8);mMesh.add(head);[[-0.35,0.7],[-0.35,-0.7],[0.35,0.7],[0.35,-0.7]].forEach(([lx,lz])=>{const l=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.1,1.2,8),bm);l.position.set(lx,0.6,lz);mMesh.add(l);});mMesh.scale.set(2.2,2.2,2.2);mMesh.position.set(player.x,0,player.z);sc.add(mMesh);msg('Montou! Velocidade dobrada!');}}
+function updateHUD(){document.getElementById('hpf').style.width=(player.hp/player.maxHp*100)+'%';document.getElementById('hpl').textContent=player.hp+'/'+player.maxHp;document.getElementById('mpf').style.width=(player.mp/player.maxMp*100)+'%';document.getElementById('mpl').textContent=Math.floor(player.mp)+'/'+player.maxMp;document.getElementById('xpfill').style.width=(player.xp/player.xpNext*100)+'%';document.getElementById('lvl').textContent='Nivel '+player.level;document.querySelectorAll('.sk').forEach((b,i)=>{const cd=b.querySelector('.cd');if(player.cd[i]>0){cd.style.display='block';cd.textContent=player.cd[i].toFixed(1);}else cd.style.display='none';});if(target&&target.alive){document.getElementById('ebar').style.display='block';document.getElementById('ename').textContent=target.name;document.getElementById('ehpf').style.width=(target.hp/target.maxHp*100)+'%';}}
 function showEnemy(e){document.getElementById('ebar').style.display='block';document.getElementById('ename').textContent=e.name;document.getElementById('ehpf').style.width=(e.hp/e.maxHp*100)+'%';}
-function updateMap(){
-const c=document.getElementById('map').getContext('2d');
-c.fillStyle='#1a1a1a';c.fillRect(0,0,140,140);
-const s=140/(MAP*2);
-enemies.forEach(e=>{if(!e.alive)return;c.fillStyle='#F00';c.fillRect((e.x+MAP)*s-2,(e.z+MAP)*s-2,4,4);});
-npcs.forEach(n=>{c.fillStyle='#FFD700';c.fillRect((n.x+MAP)*s-2,(n.z+MAP)*s-2,4,4);});
-c.fillStyle='#0F0';c.beginPath();c.arc((player.x+MAP)*s,(player.z+MAP)*s,4,0,Math.PI*2);c.fill();
-}
-function msg(t){
-const log=document.getElementById('log');
-const m=document.createElement('div');m.className='msg';m.textContent=t;log.appendChild(m);
-if(log.children.length>6)log.removeChild(log.firstChild);
-setTimeout(()=>{m.style.opacity='0';setTimeout(()=>m.remove(),1000);},4000);
-}
+function updateMap(){const c=document.getElementById('map').getContext('2d');c.fillStyle='#0a0a1a';c.fillRect(0,0,150,150);const s=150/(MAP*2);enemies.forEach(e=>{if(!e.alive)return;c.fillStyle='#FF3333';c.fillRect((e.x+MAP)*s-2,(e.z+MAP)*s-2,5,5);});npcs.forEach(n=>{c.fillStyle='#FFD700';c.fillRect((n.x+MAP)*s-2,(n.z+MAP)*s-2,5,5);});c.fillStyle='#33FF33';c.beginPath();c.arc((player.x+MAP)*s,(player.z+MAP)*s,5,0,Math.PI*2);c.fill();}
+function msg(t){const log=document.getElementById('log');const m=document.createElement('div');m.className='msg';m.textContent=t;log.appendChild(m);if(log.children.length>6)log.removeChild(log.firstChild);setTimeout(()=>{m.style.opacity='0';setTimeout(()=>m.remove(),1000);},4000);}
 </script>
 </body>
-</html>
-<button id="newbtn" onclick="location.reload()">Novo Personagem</button>
-<div id="dlg"><h3 id="dn"></h3><p id="dt"></p><button onclick="document.getElementById('dlg').style.display='none'">Aceitar</button><button onclick="document.getElementById('dlg').style.display='none'">Fechar</button></div>
-</div>
+</html> 
+                      
