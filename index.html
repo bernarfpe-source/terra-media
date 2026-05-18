@@ -2,1326 +2,499 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Terra-Media: Aventura 3D - Babylon.js</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babylonjs/6.0.0/babylon.js"></script>
+<title>Terra-Media 3D</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { overflow:hidden; background:#000; font-family:'Segoe UI',sans-serif; color:#fff; }
-#renderCanvas { width:100%; height:100vh; touch-action:none; display:block; }
-#intro-screen { position:absolute; top:0; left:0; width:100%; height:100%; z-index:200; background:#000; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-#intro-canvas { position:absolute; top:0; left:0; width:100%; height:100%; }
-#intro-overlay { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; z-index:10; }
-#intro-title { text-align:center; opacity:0; transition:opacity 2s; }
-#intro-tagline { opacity:0; transition:opacity 2s; }
-#intro-heroes { opacity:0; transition:opacity 1s; display:flex; gap:15px; pointer-events:auto; }
-.intro-card { text-align:center; cursor:pointer; padding:15px 20px; background:rgba(0,0,0,0.7); border:2px solid #555; border-radius:10px; transition:all 0.3s; }
-.intro-card:hover { border-color:#FFD700; transform:translateY(-5px); box-shadow:0 8px 25px rgba(255,215,0,0.3); }
-#hud { display:none; position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:50; }
-#hud * { pointer-events:auto; }
-#top-bar { position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.7); border:1px solid #444; border-radius:8px; padding:8px 12px; }
-#top-bar h3 { color:#FFD700; font-size:14px; margin-bottom:4px; }
-.bar-container { width:180px; height:14px; background:#222; border-radius:7px; margin:3px 0; position:relative; overflow:hidden; }
-.bar-fill { height:100%; border-radius:7px; transition:width 0.3s; }
-#hp-bar .bar-fill { background:linear-gradient(to right,#440000,#CC0000); }
-#mp-bar .bar-fill { background:linear-gradient(to right,#000044,#0044CC); }
-.bar-label { position:absolute; top:0; left:0; width:100%; text-align:center; font-size:10px; line-height:14px; color:#fff; text-shadow:1px 1px 1px #000; }
-#xp-bar { width:180px; height:8px; background:#222; border-radius:4px; margin-top:4px; }
-#xp-fill { height:100%; background:linear-gradient(to right,#444400,#AAAA00); border-radius:4px; width:0%; transition:width 0.3s; }
-#level-label { color:#FFD700; font-size:11px; margin-top:2px; }
-#skills-bar { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); display:flex; gap:8px; }
-.skill-btn { width:50px; height:50px; background:rgba(0,0,0,0.8); border:2px solid #555; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; position:relative; }
-.skill-btn:hover { border-color:#FFD700; }
-.skill-btn .icon { font-size:20px; }
-.skill-btn .key { font-size:9px; color:#aaa; }
-.skill-btn .cd-overlay { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); border-radius:6px; display:none; }
-#enemy-info { position:absolute; top:10px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.7); border:2px solid #880000; border-radius:8px; padding:6px 16px; display:none; text-align:center; }
-#enemy-info h4 { color:#FF4444; font-size:13px; }
-#enemy-hp-bar { width:200px; height:10px; background:#333; border-radius:5px; margin-top:4px; }
-#enemy-hp-fill { height:100%; background:linear-gradient(to right,#880000,#FF2200); border-radius:5px; transition:width 0.2s; }
-#msg-log { position:absolute; bottom:90px; left:20px; max-width:300px; pointer-events:none; }
-.msg { color:#fff; font-size:12px; padding:3px 0; opacity:1; transition:opacity 1s; text-shadow:1px 1px 2px #000; }
-#crosshair { display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); pointer-events:none; z-index:55; }
-#minimap { position:absolute; top:10px; right:10px; width:140px; height:140px; border:2px solid #444; border-radius:4px; background:rgba(0,0,0,0.5); }
-#new-char-btn { position:absolute; top:10px; right:160px; padding:6px 12px; background:rgba(0,0,0,0.7); color:#FFD700; border:1px solid #FFD700; border-radius:6px; cursor:pointer; font-size:11px; }
-#dialog-box { display:none; position:absolute; bottom:100px; left:50%; transform:translateX(-50%); width:500px; background:rgba(0,0,0,0.9); border:2px solid #FFD700; border-radius:10px; padding:15px; text-align:center; }
-#dialog-box h3 { color:#FFD700; margin-bottom:8px; }
-#dialog-box p { color:#ccc; font-size:13px; margin-bottom:10px; }
-#dialog-box button { padding:8px 20px; background:#333; color:#FFD700; border:1px solid #FFD700; border-radius:6px; cursor:pointer; margin:0 5px; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#000;font-family:'Segoe UI',sans-serif;color:#fff}
+canvas{display:block}
+#intro{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#intro h1{color:#FFD700;font-size:3rem;text-shadow:0 0 30px rgba(255,150,0,0.6);letter-spacing:6px;opacity:0;animation:fadeIn 2s 0.5s forwards}
+#intro p{color:#ccc;margin-top:15px;font-style:italic;opacity:0;animation:fadeIn 2s 2s forwards}
+#cards{display:flex;gap:15px;margin-top:30px;opacity:0;animation:fadeIn 1s 3s forwards}
+.card{padding:18px 24px;background:rgba(0,0,0,0.7);border:2px solid #555;border-radius:10px;cursor:pointer;text-align:center;transition:all 0.3s}
+.card:hover{border-color:#FFD700;transform:translateY(-5px);box-shadow:0 8px 25px rgba(255,215,0,0.3)}
+.card h3{font-size:1.1rem;margin-bottom:4px}
+.card span{color:#aaa;font-size:0.75rem}
+@keyframes fadeIn{to{opacity:1}}
+#hud{display:none;position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50}
+#hud>*{pointer-events:auto}
+#stats{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.75);border:1px solid #444;border-radius:8px;padding:10px 14px}
+#stats h3{color:#FFD700;font-size:14px;margin-bottom:6px}
+.bar{width:180px;height:14px;background:#222;border-radius:7px;margin:4px 0;position:relative;overflow:hidden}
+.bar-fill{height:100%;border-radius:7px;transition:width 0.3s}
+.bar-hp .bar-fill{background:linear-gradient(to right,#660000,#CC0000)}
+.bar-mp .bar-fill{background:linear-gradient(to right,#000066,#0044CC)}
+.bar-label{position:absolute;top:0;left:0;width:100%;text-align:center;font-size:10px;line-height:14px;color:#fff;text-shadow:1px 1px #000}
+#xpbar{width:180px;height:6px;background:#222;border-radius:3px;margin-top:5px}
+#xpfill{height:100%;background:#AA0;border-radius:3px;width:0%}
+#lvl{color:#FFD700;font-size:11px;margin-top:3px}
+#skills{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.sk{width:50px;height:50px;background:rgba(0,0,0,0.85);border:2px solid #555;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.sk:hover{border-color:#FFD700}
+.sk .i{font-size:16px}
+.sk .k{font-size:9px;color:#aaa}
+.sk .cd{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);border-radius:6px;display:none;line-height:50px;text-align:center;color:#fff;font-size:11px}
+#ebar{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);border:2px solid #800;border-radius:8px;padding:6px 16px;display:none;text-align:center}
+#ebar h4{color:#F44;font-size:13px}
+#ehp{width:200px;height:10px;background:#333;border-radius:5px;margin-top:4px}
+#ehpf{height:100%;background:linear-gradient(to right,#800,#F20);border-radius:5px;transition:width 0.2s}
+#log{position:absolute;bottom:90px;left:20px;max-width:300px;pointer-events:none}
+.msg{font-size:12px;padding:3px 0;text-shadow:1px 1px 2px #000;opacity:1;transition:opacity 1s}
+#map{position:absolute;top:10px;right:10px;width:140px;height:140px;border:2px solid #444;border-radius:4px;background:rgba(0,0,0,0.6)}
+#newbtn{position:absolute;top:160px;right:10px;padding:6px 12px;background:rgba(0,0,0,0.7);color:#FFD700;border:1px solid #FFD700;border-radius:6px;cursor:pointer;font-size:11px}
+#dlg{display:none;position:absolute;bottom:100px;left:50%;transform:translateX(-50%);width:450px;background:rgba(0,0,0,0.92);border:2px solid #FFD700;border-radius:12px;padding:18px;text-align:center}
+#dlg h3{color:#FFD700;margin-bottom:8px}
+#dlg p{color:#ccc;font-size:13px;margin-bottom:12px}
+#dlg button{padding:8px 20px;background:#222;color:#FFD700;border:1px solid #FFD700;border-radius:6px;cursor:pointer;margin:0 5px}
 </style>
 </head>
 <body>
-<canvas id="renderCanvas"></canvas>
-
-<div id="intro-screen">
-    <canvas id="intro-canvas"></canvas>
-    <div id="intro-overlay">
-        <div id="intro-title">
-            <div style="color:#ddd;font-size:0.9rem;letter-spacing:4px;margin-bottom:8px;text-shadow:0 0 10px #000;">UMA JORNADA PELA</div>
-            <div style="color:#FFD700;font-size:3.5rem;font-weight:bold;text-shadow:0 0 30px rgba(255,150,0,0.6),0 4px 8px rgba(0,0,0,0.8);letter-spacing:6px;">TERRA-MEDIA</div>
-            <div style="color:#FF6600;font-size:1.1rem;margin-top:10px;letter-spacing:3px;text-shadow:0 0 10px #000;">BABYLON.JS ENGINE</div>
-        </div>
-        <div id="intro-tagline" style="color:#ccc;font-size:0.9rem;margin-top:20px;font-style:italic;text-shadow:0 2px 4px #000;">Clique em um heroi para iniciar sua jornada</div>
-        <div id="intro-heroes" style="margin-top:25px;">
-            <div class="intro-card" data-char="0"><div style="color:#FFD700;font-size:1.1rem;font-weight:bold;">Bernardino</div><div style="color:#aaa;font-size:0.75rem;">Barbaro</div></div>
-            <div class="intro-card" data-char="1"><div style="color:#4488FF;font-size:1.1rem;font-weight:bold;">Bernardo</div><div style="color:#aaa;font-size:0.75rem;">Guerreiro</div></div>
-            <div class="intro-card" data-char="2"><div style="color:#44AA44;font-size:1.1rem;font-weight:bold;">Raphael</div><div style="color:#aaa;font-size:0.75rem;">Arqueiro</div></div>
-            <div class="intro-card" data-char="3"><div style="color:#CC44FF;font-size:1.1rem;font-weight:bold;">Leticia</div><div style="color:#aaa;font-size:0.75rem;">Maga Elfica</div></div>
-        </div>
-    </div>
+<div id="intro">
+<h1>TERRA-MEDIA</h1>
+<p>Clique em um heroi para iniciar</p>
+<div id="cards">
+<div class="card" onclick="start(0)"><h3 style="color:#FFD700">Bernardino</h3><span>Barbaro</span></div>
+<div class="card" onclick="start(1)"><h3 style="color:#48F">Bernardo</h3><span>Guerreiro</span></div>
+<div class="card" onclick="start(2)"><h3 style="color:#4A4">Raphael</h3><span>Arqueiro</span></div>
+<div class="card" onclick="start(3)"><h3 style="color:#C4F">Leticia</h3><span>Maga</span></div>
 </div>
-
+</div>
 <div id="hud">
-    <button id="new-char-btn" onclick="resetGame()">Novo Personagem</button>
-    <div id="top-bar">
-        <h3 id="hud-name">Heroi</h3>
-        <div class="bar-container" id="hp-bar"><div class="bar-fill" style="width:100%"></div><div class="bar-label">100/100</div></div>
-        <div class="bar-container" id="mp-bar"><div class="bar-fill" style="width:100%"></div><div class="bar-label">50/50</div></div>
-        <div id="xp-bar"><div id="xp-fill"></div></div>
-        <div id="level-label">Nivel 1</div>
-    </div>
-    <div id="enemy-info"><h4 id="enemy-name">Inimigo</h4><div id="enemy-hp-bar"><div id="enemy-hp-fill" style="width:100%"></div></div></div>
-    <div id="skills-bar">
-        <div class="skill-btn" data-skill="0"><span class="icon">&#x2694;&#xFE0F;</span><span class="key">1</span><div class="cd-overlay"></div></div>
-        <div class="skill-btn" data-skill="1"><span class="icon">&#x1F525;</span><span class="key">2</span><div class="cd-overlay"></div></div>
-        <div class="skill-btn" data-skill="2"><span class="icon">&#x1F4AB;</span><span class="key">3</span><div class="cd-overlay"></div></div>
-        <div class="skill-btn" data-skill="3"><span class="icon">&#x2764;&#xFE0F;</span><span class="key">4</span><div class="cd-overlay"></div></div>
-    </div>
-    <div id="msg-log"></div>
-    <canvas id="minimap" width="140" height="140"></canvas>
-    <div id="crosshair"><div style="width:24px;height:24px;position:relative;"><div style="position:absolute;top:11px;left:0;width:10px;height:2px;background:#0f0;"></div><div style="position:absolute;top:11px;right:0;width:10px;height:2px;background:#0f0;"></div><div style="position:absolute;left:11px;top:0;width:2px;height:10px;background:#0f0;"></div><div style="position:absolute;left:11px;bottom:0;width:2px;height:10px;background:#0f0;"></div></div></div>
-    <div id="dialog-box"><h3 id="dialog-name"></h3><p id="dialog-text"></p><button id="dialog-accept">Aceitar</button><button id="dialog-close">Fechar</button></div>
+<div id="stats"><h3 id="pname">Heroi</h3>
+<div class="bar bar-hp"><div class="bar-fill" id="hpf" style="width:100%"></div><div class="bar-label" id="hpl">100/100</div></div>
+<div class="bar bar-mp"><div class="bar-fill" id="mpf" style="width:100%"></div><div class="bar-label" id="mpl">50/50</div></div>
+<div id="xpbar"><div id="xpfill"></div></div><div id="lvl">Nivel 1</div></div>
+<div id="ebar"><h4 id="ename"></h4><div id="ehp"><div id="ehpf"></div></div></div>
+<div id="skills">
+<div class="sk" onclick="skill(0)"><span class="i">I</span><span class="k">1</span><div class="cd"></div></div>
+<div class="sk" onclick="skill(1)"><span class="i">II</span><span class="k">2</span><div class="cd"></div></div>
+<div class="sk" onclick="skill(2)"><span class="i">III</span><span class="k">3</span><div class="cd"></div></div>
+<div class="sk" onclick="skill(3)"><span class="i">IV</span><span class="k">4</span><div class="cd"></div></div>
 </div>
-
+<div id="log"></div>
+<canvas id="map" width="140" height="140"></canvas>
 <script>
-// ── GAME DATA ──
-const heroData = [
-    { name:'Bernardino', cls:'Barbaro', hp:120, mp:30, atk:18, def:8, spd:5, color:'#8B4513', skills:['Golpe Brutal','Furia','Grito de Guerra','Regenerar'] },
-    { name:'Bernardo', cls:'Guerreiro', hp:150, mp:40, atk:14, def:14, spd:4, color:'#2255CC', skills:['Investida','Escudo','Provocar','Cura Divina'] },
-    { name:'Raphael', cls:'Arqueiro', hp:90, mp:50, atk:16, def:6, spd:7, color:'#44AA44', skills:['Flecha Rapida','Chuva de Flechas','Armadilha','Evasao'] },
-    { name:'Leticia', cls:'Maga', hp:80, mp:80, atk:20, def:5, spd:4, color:'#CC44FF', skills:['Bola de Fogo','Nevasca','Raio','Cura Arcana'] }
+// DATA
+const H=[
+{name:'Bernardino',cls:'Barbaro',hp:120,mp:30,atk:18,def:8,spd:5,color:0x8B4513,skills:['Golpe Brutal','Furia','Grito de Guerra','Regenerar']},
+{name:'Bernardo',cls:'Guerreiro',hp:150,mp:40,atk:14,def:14,spd:4,color:0x2255CC,skills:['Investida','Escudo','Provocar','Cura Divina']},
+{name:'Raphael',cls:'Arqueiro',hp:90,mp:50,atk:16,def:6,spd:7,color:0x44AA44,skills:['Flecha','Chuva de Flechas','Armadilha','Evasao']},
+{name:'Leticia',cls:'Maga',hp:80,mp:80,atk:20,def:5,spd:4,color:0xCC44FF,skills:['Bola de Fogo','Nevasca','Raio','Cura Arcana']}
 ];
-
-let selectedChar = 0, gameStarted = false;
-let player = null, enemies = [], npcs = [], targetEnemy = null;
-let engine, scene, camera, playerMesh;
-let shadowGen;
-
-// ── INTRO (uses separate canvas) ──
-(function() {
-    const canvas = document.getElementById('intro-canvas');
-    const introEngine = new BABYLON.Engine(canvas, true);
-    const introScene = new BABYLON.Scene(introEngine);
-    introScene.clearColor = new BABYLON.Color4(0.04, 0.02, 0.02, 1);
-
-    const introCam = new BABYLON.ArcRotateCamera('introCam', 0, 1.2, 80, new BABYLON.Vector3(0, 30, -30), introScene);
-
-    // Dark lighting
-    const hemi = new BABYLON.HemisphericLight('hemi', new BABYLON.Vector3(0, 1, 0), introScene);
-    hemi.intensity = 0.15;
-    hemi.diffuse = new BABYLON.Color3(0.3, 0.1, 0.05);
-
-    // Ground
-    const ground = BABYLON.MeshBuilder.CreateGround('ground', {width:200, height:200}, introScene);
-    const gMat = new BABYLON.PBRMaterial('gMat', introScene);
-    gMat.albedoColor = new BABYLON.Color3(0.03, 0.02, 0.02);
-    gMat.roughness = 1; gMat.metallic = 0;
-    ground.material = gMat;
-
-    // Tower (Barad-dur)
-    const towerMat = new BABYLON.PBRMaterial('towerMat', introScene);
-    towerMat.albedoColor = new BABYLON.Color3(0.05, 0.05, 0.05);
-    towerMat.roughness = 0.8; towerMat.metallic = 0.3;
-
-    const tBase = BABYLON.MeshBuilder.CreateBox('tBase', {width:8, height:25, depth:8}, introScene);
-    tBase.position.y = 12.5; tBase.material = towerMat;
-    const tMid = BABYLON.MeshBuilder.CreateBox('tMid', {width:6, height:20, depth:6}, introScene);
-    tMid.position.y = 30; tMid.material = towerMat;
-    const tTop = BABYLON.MeshBuilder.CreateBox('tTop', {width:4, height:15, depth:4}, introScene);
-    tTop.position.y = 45; tTop.material = towerMat;
-    const tSpire = BABYLON.MeshBuilder.CreateCylinder('tSpire', {diameterTop:0, diameterBottom:4, height:12, tessellation:6}, introScene);
-    tSpire.position.y = 58; tSpire.material = towerMat;
-
-    // Eye of Sauron
-    const eyeMat = new BABYLON.StandardMaterial('eyeMat', introScene);
-    eyeMat.emissiveColor = new BABYLON.Color3(1, 0.3, 0);
-    eyeMat.disableLighting = true;
-    const eye = BABYLON.MeshBuilder.CreateBox('eye', {width:3, height:5, depth:0.5}, introScene);
-    eye.position.y = 65; eye.material = eyeMat;
-    const eyeInner = BABYLON.MeshBuilder.CreateBox('eyeIn', {width:1.5, height:3.5, depth:0.3}, introScene);
-    eyeInner.position.y = 65;
-    const eyeInMat = new BABYLON.StandardMaterial('eyeInMat', introScene);
-    eyeInMat.emissiveColor = new BABYLON.Color3(1, 0.7, 0);
-    eyeInMat.disableLighting = true;
-    eyeInner.material = eyeInMat;
-    const eyeLight = new BABYLON.PointLight('eyeLight', new BABYLON.Vector3(0, 65, 0), introScene);
-    eyeLight.diffuse = new BABYLON.Color3(1, 0.3, 0);
-    eyeLight.intensity = 5; eyeLight.range = 80;
-
-    // One Ring
-    const ring = BABYLON.MeshBuilder.CreateTorus('ring', {diameter:5, thickness:0.7, tessellation:32}, introScene);
-    ring.position.set(0, 20, 25);
-    const ringMat = new BABYLON.PBRMaterial('ringMat', introScene);
-    ringMat.albedoColor = new BABYLON.Color3(1, 0.84, 0);
-    ringMat.metallic = 1; ringMat.roughness = 0.2;
-    ringMat.emissiveColor = new BABYLON.Color3(0.4, 0.25, 0);
-    ring.material = ringMat;
-    const ringLight = new BABYLON.PointLight('ringLight', new BABYLON.Vector3(0, 20, 25), introScene);
-    ringLight.diffuse = new BABYLON.Color3(1, 0.7, 0);
-    ringLight.intensity = 3; ringLight.range = 30;
-
-    // Mountains
-    for (let i = 0; i < 5; i++) {
-        const mt = BABYLON.MeshBuilder.CreateCylinder('mt'+i, {diameterTop:0, diameterBottom:15+Math.random()*10, height:30+Math.random()*20, tessellation:6}, introScene);
-        mt.position.set(-60+i*30, 10, -60+Math.random()*20);
-        mt.material = towerMat;
-    }
-
-    // Particles (embers)
-    const ps = new BABYLON.ParticleSystem('embers', 200, introScene);
-    ps.particleTexture = new BABYLON.Texture('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA0SURBVChTY/j//z8DAwMDIwMEMIEpBgYGRgYIYAJTDAwMjAwQwASmGBgYGBkggAlMAQMAAPkABf8JlLIAAAAASUVORK5CYII=', introScene);
-    ps.emitter = new BABYLON.Vector3(0, 0, 0);
-    ps.minEmitBox = new BABYLON.Vector3(-50, 0, -50);
-    ps.maxEmitBox = new BABYLON.Vector3(50, 0, 50);
-    ps.color1 = new BABYLON.Color4(1, 0.4, 0, 0.8);
-    ps.color2 = new BABYLON.Color4(1, 0.6, 0, 0.6);
-    ps.minSize = 0.1; ps.maxSize = 0.3;
-    ps.minLifeTime = 3; ps.maxLifeTime = 6;
-    ps.emitRate = 40;
-    ps.direction1 = new BABYLON.Vector3(-0.5, 1, -0.5);
-    ps.direction2 = new BABYLON.Vector3(0.5, 2, 0.5);
-    ps.gravity = new BABYLON.Vector3(0, -0.1, 0);
-    ps.start();
-
-    let introTime = 0;
-    introEngine.runRenderLoop(() => {
-        introTime += 0.016;
-        // Camera zoom toward eye
-        const phase = Math.min(introTime / 30, 1);
-        introCam.radius = 80 - phase * 55;
-        introCam.beta = 1.2 - phase * 0.4;
-        introCam.alpha += 0.002;
-        introCam.target.y = 30 + phase * 30;
-        // Ring animation
-        ring.rotation.y += 0.015;
-        ring.rotation.x = Math.sin(introTime * 0.6) * 0.2;
-        ring.position.y = 20 + Math.sin(introTime * 0.8) * 1.5;
-        ringLight.intensity = 2.5 + Math.sin(introTime * 2) * 1.5;
-        // Eye pulse
-        eye.scaling.x = 1 + Math.sin(introTime * 3) * 0.1;
-        eye.scaling.y = 1 + Math.cos(introTime * 2) * 0.05;
-        eyeLight.intensity = 4 + Math.sin(introTime * 2.5) * 2;
-        eye.rotation.y = Math.sin(introTime * 0.4) * 0.4;
-        eyeInner.rotation.y = eye.rotation.y;
-        introScene.render();
-    });
-
-    // Fade in UI
-    setTimeout(() => document.getElementById('intro-title').style.opacity = '1', 500);
-    setTimeout(() => document.getElementById('intro-tagline').style.opacity = '1', 2500);
-    setTimeout(() => document.getElementById('intro-heroes').style.opacity = '1', 3500);
-
-    window.stopIntro = function() { introEngine.stopRenderLoop(); introEngine.dispose(); };
-})();
-
-// ── MAIN GAME ──
-const MAP_SIZE = 100;
-const keys = {};
-window.addEventListener('keydown', e => { keys[e.code] = true; });
-window.addEventListener('keyup', e => { keys[e.code] = false; });
-
-function startGameWithChar(charIdx) {
-    window.stopIntro();
-    document.getElementById('intro-screen').style.display = 'none';
-    document.getElementById('hud').style.display = 'block';
-    selectedChar = charIdx;
-    const h = heroData[selectedChar];
-    player = { x:0, z:0, hp:h.hp, maxHp:h.hp, mp:h.mp, maxMp:h.mp, xp:0, xpNext:100, level:1, atk:h.atk, def:h.def, spd:h.spd, cooldowns:[0,0,0,0] };
-    document.getElementById('hud-name').textContent = h.name + ' - ' + h.cls;
-    initGame();
-    gameStarted = true;
-    addMessage('Bem-vindo, ' + h.name + '!');
-    addMessage('WASD: mover | 1-4: skills | Clique: alvo');
-}
-
-function initGame() {
-    const canvas = document.getElementById('renderCanvas');
-    engine = new BABYLON.Engine(canvas, true);
-    scene = new BABYLON.Scene(engine);
-    scene.clearColor = new BABYLON.Color4(0.4, 0.6, 0.9, 1);
-    scene.ambientColor = new BABYLON.Color3(0.3, 0.3, 0.3);
-    scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
-    scene.fogDensity = 0.003;
-    scene.fogColor = new BABYLON.Color3(0.5, 0.6, 0.7);
-
-    // Camera (3rd person follow)
-    camera = new BABYLON.ArcRotateCamera('cam', Math.PI, 1.2, 18, BABYLON.Vector3.Zero(), scene);
-    camera.lowerRadiusLimit = 8;
-    camera.upperRadiusLimit = 40;
-    camera.lowerBetaLimit = 0.3;
-    camera.upperBetaLimit = 1.5;
-    camera.attachControl(canvas, true);
-    camera.inputs.attached.keyboard.detachControl();
-    camera.inputs.attached.mousewheel.wheelPrecision = 20;
-
-    // Lighting
-    const sun = new BABYLON.DirectionalLight('sun', new BABYLON.Vector3(-0.5, -1, -0.3), scene);
-    sun.intensity = 1.2;
-    sun.diffuse = new BABYLON.Color3(1, 0.95, 0.8);
-    const hemi = new BABYLON.HemisphericLight('hemi', new BABYLON.Vector3(0, 1, 0), scene);
-    hemi.intensity = 0.4;
-    hemi.groundColor = new BABYLON.Color3(0.2, 0.15, 0.1);
-
-    // Shadows
-    shadowGen = new BABYLON.ShadowGenerator(2048, sun);
-    shadowGen.useBlurExponentialShadowMap = true;
-    shadowGen.blurKernel = 32;
-
-    // Glow layer for magic effects
-    const gl = new BABYLON.GlowLayer('glow', scene);
-    gl.intensity = 0.6;
-
-    // Image processing for tone mapping
-    scene.imageProcessingConfiguration.toneMappingEnabled = true;
-    scene.imageProcessingConfiguration.toneMappingType = BABYLON.ImageProcessingConfiguration.TONEMAPPING_ACES;
-    scene.imageProcessingConfiguration.exposure = 1.2;
-    scene.imageProcessingConfiguration.contrast = 1.3;
-
-    createTerrain();
-    createPlayer();
-    spawnEnemies();
-    spawnNPCs();
-    setupInput();
-    spawnLoot();
-
-    // Add V and M key handlers
-    window.addEventListener('keydown', e => {
-        if (e.code === 'KeyV' && gameStarted) toggleFPMode();
-        if (e.code === 'KeyM' && gameStarted) toggleMount();
-    });
-
-    engine.runRenderLoop(() => {
-        if (!gameStarted) return;
-        const dt = engine.getDeltaTime() / 1000;
-        if (fpMode) updateFP(dt);
-        else updatePlayer(dt);
-        updateEnemies(dt);
-        updateHUD();
-        updateMinimap();
-        checkLoot();
-        updateRegion();
-        updateDragonFire();
-        if (mounted && mountMesh) {
-            mountMesh.position.x = player.x;
-            mountMesh.position.z = player.z;
-            mountMesh.rotation.y = playerMesh.rotation.y;
-        }
-        if (Math.floor(Date.now()/2000) !== Math.floor((Date.now()-16)/2000)) updateMusic();
-        scene.render();
-    });
-
-    window.addEventListener('resize', () => engine.resize());
-}
-
-// ── TERRAIN ──
-function createTerrain() {
-    // Ground with procedural grass texture
-    const ground = BABYLON.MeshBuilder.CreateGround('ground', {width:MAP_SIZE*2, height:MAP_SIZE*2, subdivisions:60}, scene);
-    const gMat = new BABYLON.PBRMaterial('gMat', scene);
-  
-    gMat.roughness = 0.95;
-    gMat.metallic = 0;
-    // Bump for depth
-    const bumpTex = new BABYLON.DynamicTexture('bumpTex', 256, scene, false);
-    const bCtx = bumpTex.getContext();
-    for (let x=0; x<256; x++) for (let y=0; y<256; y++) {
-        const v = Math.floor(128 + (Math.random()-0.5)*60);
-        bCtx.fillStyle = `rgb(${v},${v},${v})`;
-        bCtx.fillRect(x, y, 1, 1);
-    }
-    bumpTex.update();
-    gMat.bumpTexture = bumpTex;
-    gMat.bumpTexture.uScale = 20;
-    gMat.bumpTexture.vScale = 20;
-    gMat.bumpTexture.level = 0.3;
-    ground.material = gMat;
-    ground.receiveShadows = true;
-
-    // Trees
-    for (let i = 0; i < 80; i++) {
-        const x = (Math.random()-0.5)*MAP_SIZE*1.8;
-        const z = (Math.random()-0.5)*MAP_SIZE*1.8;
-        if (Math.abs(x) < 10 && Math.abs(z) < 10) continue;
-        createTree(x, z);
-    }
-    // Rocks
-    for (let i = 0; i < 40; i++) {
-        const x = (Math.random()-0.5)*MAP_SIZE*1.8;
-        const z = (Math.random()-0.5)*MAP_SIZE*1.8;
-        createRock(x, z);
-    }
-    // Castle
-    createCastle();
-}
-
-function createTree(x, z) {
-    const h = 3 + Math.random()*3;
-    const trunk = BABYLON.MeshBuilder.CreateCylinder('trunk', {diameterTop:0.3, diameterBottom:0.6+Math.random()*0.3, height:h, tessellation:8}, scene);
-    trunk.position.set(x, h/2, z);
-    const tMat = new BABYLON.PBRMaterial('tMat'+x+z, scene);
-    tMat.albedoColor = new BABYLON.Color3(0.25+Math.random()*0.1, 0.15+Math.random()*0.05, 0.05);
-    tMat.roughness = 1; trunk.material = tMat;
-    shadowGen.addShadowCaster(trunk);
-    // Multiple leaf clusters for realism
-    const leafCount = 2 + Math.floor(Math.random()*3);
-    for (let i=0; i<leafCount; i++) {
-        const lSize = 2 + Math.random()*2;
-        const leaves = BABYLON.MeshBuilder.CreateSphere('leaves', {diameter:lSize, segments:5}, scene);
-        leaves.position.set(x+(Math.random()-0.5)*1.5, h+1+i*0.8+Math.random(), z+(Math.random()-0.5)*1.5);
-        const lMat = new BABYLON.PBRMaterial('lMat'+x+z+i, scene);
-        lMat.albedoColor = new BABYLON.Color3(0.05+Math.random()*0.15, 0.3+Math.random()*0.3, 0.02+Math.random()*0.08);
-        lMat.roughness = 0.85; lMat.metallic = 0;
-        leaves.material = lMat;
-        shadowGen.addShadowCaster(leaves);
-    }
-}
-
-function createRock(x, z) {
-    const w = 0.8+Math.random()*2.5, h = 0.5+Math.random()*1.8, d = 0.8+Math.random()*2.5;
-    const rock = BABYLON.MeshBuilder.CreateBox('rock', {width:w, height:h, depth:d}, scene);
-    rock.position.set(x, h/2, z);
-    rock.rotation.set(Math.random()*0.3, Math.random()*Math.PI, Math.random()*0.2);
-    const rMat = new BABYLON.PBRMaterial('rMat'+x+z, scene);
-    const grey = 0.25+Math.random()*0.2;
-    rMat.albedoColor = new BABYLON.Color3(grey, grey-0.02, grey-0.04);
-    rMat.roughness = 0.85+Math.random()*0.15;
-    rMat.metallic = 0.05;
-    rock.material = rMat;
-    shadowGen.addShadowCaster(rock);
-    // Add smaller rocks around
-    if (Math.random() > 0.5) {
-        const small = BABYLON.MeshBuilder.CreateBox('srock', {width:w*0.4, height:h*0.3, depth:d*0.4}, scene);
-        small.position.set(x+w*0.5, h*0.15, z+d*0.3);
-        small.rotation.y = Math.random()*Math.PI;
-        small.material = rMat;
-    }
-}
-
-function createCastle() {
-    const wallMat = new BABYLON.PBRMaterial('wallMat', scene);
-    wallMat.albedoColor = new BABYLON.Color3(0.5, 0.45, 0.4);
-    wallMat.roughness = 0.85; wallMat.metallic = 0.05;
-    // Walls
-    [[-15,0,-40],[15,0,-40],[15,0,-60],[-15,0,-60]].forEach(([wx,wy,wz], i) => {
-        const wall = BABYLON.MeshBuilder.CreateBox('wall'+i, {width: i<2?2:30, height:8, depth: i<2?30:2}, scene);
-        wall.position.set(wx, 4, wz); wall.material = wallMat;
-        wall.receiveShadows = true;
-    });
-    // Towers
-    [[-15,-40],[15,-40],[15,-60],[-15,-60]].forEach(([tx,tz], i) => {
-        const tower = BABYLON.MeshBuilder.CreateCylinder('tower'+i, {diameter:4, height:12, tessellation:8}, scene);
-        tower.position.set(tx, 6, tz); tower.material = wallMat;
-        const roof = BABYLON.MeshBuilder.CreateCylinder('roof'+i, {diameterTop:0, diameterBottom:5, height:4, tessellation:8}, scene);
-        roof.position.set(tx, 14, tz);
-        const roofMat = new BABYLON.PBRMaterial('roofMat'+i, scene);
-        roofMat.albedoColor = new BABYLON.Color3(0.4, 0.1, 0.1);
-        roofMat.roughness = 0.7; roof.material = roofMat;
-    });
-}
-
-// ── PLAYER ──
-let playerLimbs = {};
-let walkTime = 0;
-
-function createPlayer() {
-    const h = heroData[selectedChar];
-    playerMesh = new BABYLON.TransformNode('player', scene);
-    playerMesh.position.set(player.x, 0, player.z);
-
-    const mat = new BABYLON.PBRMaterial('playerMat', scene);
-    mat.albedoColor = BABYLON.Color3.FromHexString(h.color);
-    mat.roughness = 0.6; mat.metallic = 0.2;
-    const skinMat = new BABYLON.PBRMaterial('skinMat', scene);
-    skinMat.albedoColor = new BABYLON.Color3(0.85, 0.65, 0.45);
-    skinMat.roughness = 0.8;
-
-    // Torso
-    const torso = BABYLON.MeshBuilder.CreateBox('torso', {width:0.9, height:1.1, depth:0.5}, scene);
-    torso.position.y = 1.55; torso.material = mat; torso.parent = playerMesh;
-    // Shoulder pads
-    [-0.5, 0.5].forEach(sx => {
-        const pad = BABYLON.MeshBuilder.CreateBox('pad', {width:0.3, height:0.15, depth:0.35}, scene);
-        pad.position.set(sx, 2.05, 0); pad.material = mat; pad.parent = playerMesh;
-    });
-    // Belt
-    const beltMat = new BABYLON.PBRMaterial('beltMat', scene);
-    beltMat.albedoColor = new BABYLON.Color3(0.3, 0.15, 0.05); beltMat.roughness = 0.7;
-    const belt = BABYLON.MeshBuilder.CreateBox('belt', {width:0.95, height:0.15, depth:0.55}, scene);
-    belt.position.y = 1.0; belt.material = beltMat; belt.parent = playerMesh;
-    // Belt buckle
-    const buckleMat = new BABYLON.PBRMaterial('buckleMat', scene);
-    buckleMat.albedoColor = new BABYLON.Color3(0.8, 0.7, 0.2); buckleMat.metallic = 0.8; buckleMat.roughness = 0.2;
-    const buckle = BABYLON.MeshBuilder.CreateBox('buckle', {width:0.15, height:0.12, depth:0.05}, scene);
-    buckle.position.set(0, 1.0, 0.28); buckle.material = buckleMat; buckle.parent = playerMesh;
-
-    // Head
-    const head = BABYLON.MeshBuilder.CreateBox('head', {width:0.65, height:0.65, depth:0.6}, scene);
-    head.position.y = 2.5; head.material = skinMat; head.parent = playerMesh;
-    // Hair
-    const hairMat = new BABYLON.PBRMaterial('hairMat', scene);
-    hairMat.albedoColor = new BABYLON.Color3(0.15, 0.08, 0.02); hairMat.roughness = 0.9;
-    const hair = BABYLON.MeshBuilder.CreateBox('hair', {width:0.68, height:0.2, depth:0.63}, scene);
-    hair.position.y = 2.75; hair.material = hairMat; hair.parent = playerMesh;
-    // Nose
-    const nose = BABYLON.MeshBuilder.CreateBox('nose', {width:0.08, height:0.12, depth:0.1}, scene);
-    nose.position.set(0, 2.45, 0.33); nose.material = skinMat; nose.parent = playerMesh;
-    // Mouth
-    const mouthMat = new BABYLON.StandardMaterial('mouthMat', scene);
-    mouthMat.diffuseColor = new BABYLON.Color3(0.6, 0.2, 0.2);
-    const mouth = BABYLON.MeshBuilder.CreateBox('mouth', {width:0.18, height:0.04, depth:0.05}, scene);
-    mouth.position.set(0, 2.3, 0.3); mouth.material = mouthMat; mouth.parent = playerMesh;
-    // Eyes
-    const eyeMat = new BABYLON.StandardMaterial('pEyeM', scene);
-    eyeMat.diffuseColor = new BABYLON.Color3(1,1,1);
-    [-0.12, 0.12].forEach(ex => {
-        const eye = BABYLON.MeshBuilder.CreateSphere('peye', {diameter:0.1}, scene);
-        eye.position.set(ex, 2.55, 0.3); eye.material = eyeMat; eye.parent = playerMesh;
-        const pupil = BABYLON.MeshBuilder.CreateSphere('ppupil', {diameter:0.05}, scene);
-        pupil.position.set(ex, 2.55, 0.35); pupil.parent = playerMesh;
-        const pMat = new BABYLON.StandardMaterial('ppMat', scene);
-        pMat.diffuseColor = new BABYLON.Color3(0,0,0); pupil.material = pMat;
-    });
-
-    // Left arm pivot - separated from body
-    const lArmPivot = new BABYLON.TransformNode('lArm', scene);
-    lArmPivot.position.set(-0.7, 2.0, 0); lArmPivot.parent = playerMesh;
-    const lShoulder = BABYLON.MeshBuilder.CreateBox('lSh', {width:0.28, height:0.4, depth:0.28}, scene);
-    lShoulder.position.y = -0.2; lShoulder.material = mat; lShoulder.parent = lArmPivot;
-    const lArm = BABYLON.MeshBuilder.CreateBox('lArmM', {width:0.22, height:0.5, depth:0.22}, scene);
-    lArm.position.y = -0.6; lArm.material = skinMat; lArm.parent = lArmPivot;
-    const lHand = BABYLON.MeshBuilder.CreateBox('lHand', {width:0.18, height:0.18, depth:0.18}, scene);
-    lHand.position.y = -0.9; lHand.material = skinMat; lHand.parent = lArmPivot;
-
-    // Right arm pivot
-    const rArmPivot = new BABYLON.TransformNode('rArm', scene);
-    rArmPivot.position.set(0.7, 2.0, 0); rArmPivot.parent = playerMesh;
-    const rShoulder = BABYLON.MeshBuilder.CreateBox('rSh', {width:0.28, height:0.4, depth:0.28}, scene);
-    rShoulder.position.y = -0.2; rShoulder.material = mat; rShoulder.parent = rArmPivot;
-    const rArm = BABYLON.MeshBuilder.CreateBox('rArmM', {width:0.22, height:0.5, depth:0.22}, scene);
-    rArm.position.y = -0.6; rArm.material = skinMat; rArm.parent = rArmPivot;
-    const rHand = BABYLON.MeshBuilder.CreateBox('rHand', {width:0.18, height:0.18, depth:0.18}, scene);
-    rHand.position.y = -0.9; rHand.material = skinMat; rHand.parent = rArmPivot;
-
-    // Left leg pivot
-    const lLegPivot = new BABYLON.TransformNode('lLeg', scene);
-    lLegPivot.position.set(-0.2, 0.95, 0); lLegPivot.parent = playerMesh;
-    const lLeg = BABYLON.MeshBuilder.CreateBox('lLegM', {width:0.3, height:0.9, depth:0.3}, scene);
-    lLeg.position.y = -0.45; lLeg.material = mat; lLeg.parent = lLegPivot;
-
-    // Right leg pivot
-    const rLegPivot = new BABYLON.TransformNode('rLeg', scene);
-    rLegPivot.position.set(0.2, 0.95, 0); rLegPivot.parent = playerMesh;
-    const rLeg = BABYLON.MeshBuilder.CreateBox('rLegM', {width:0.3, height:0.9, depth:0.3}, scene);
-    rLeg.position.y = -0.45; rLeg.material = mat; rLeg.parent = rLegPivot;
-
-    // Boots
-    const bootMat = new BABYLON.PBRMaterial('bootMat', scene);
-    bootMat.albedoColor = new BABYLON.Color3(0.2, 0.12, 0.05); bootMat.roughness = 0.8;
-    [-0.2, 0.2].forEach(bx => {
-        const boot = BABYLON.MeshBuilder.CreateBox('boot', {width:0.32, height:0.2, depth:0.4}, scene);
-        boot.position.set(bx, 0.1, 0.05); boot.material = bootMat; boot.parent = playerMesh;
-    });
-
-    playerLimbs = { lArmPivot, rArmPivot, lLegPivot, rLegPivot };
-    // Ensure rotation works (disable quaternion)
-    lArmPivot.rotationQuaternion = null;
-    rArmPivot.rotationQuaternion = null;
-    lLegPivot.rotationQuaternion = null;
-    rLegPivot.rotationQuaternion = null;
-
-    // Weapon
-    const bladeMat = new BABYLON.PBRMaterial('bladeMat', scene);
-    bladeMat.albedoColor = new BABYLON.Color3(0.8, 0.8, 0.85);
-    bladeMat.metallic = 0.9; bladeMat.roughness = 0.1;
-    if (selectedChar === 0) {
-        const handle = BABYLON.MeshBuilder.CreateCylinder('axeH', {diameter:0.08, height:1.5}, scene);
-        handle.position.set(0, -0.2, 0.2); handle.parent = rArmPivot;
-        const hMat = new BABYLON.PBRMaterial('hMat', scene);
-        hMat.albedoColor = new BABYLON.Color3(0.35, 0.2, 0.1); hMat.roughness = 0.9; handle.material = hMat;
-        const blade = BABYLON.MeshBuilder.CreateBox('axeB', {width:0.08, height:0.5, depth:0.5}, scene);
-        blade.position.set(0, 0.5, 0.2); blade.material = bladeMat; blade.parent = rArmPivot;
-    } else if (selectedChar === 1) {
-        const blade = BABYLON.MeshBuilder.CreateBox('sword', {width:0.07, height:1.4, depth:0.04}, scene);
-        blade.position.set(0, -0.1, 0.2); blade.material = bladeMat; blade.parent = rArmPivot;
-    } else if (selectedChar === 2) {
-        const bow = BABYLON.MeshBuilder.CreateTorus('bow', {diameter:0.8, thickness:0.04, tessellation:16}, scene);
-        bow.position.set(0, -0.3, 0.2); bow.rotation.z = Math.PI/2; bow.parent = lArmPivot;
-        const bMat = new BABYLON.PBRMaterial('bMat', scene);
-        bMat.albedoColor = new BABYLON.Color3(0.5, 0.3, 0.15); bMat.roughness = 0.8; bow.material = bMat;
-    } else {
-        const staff = BABYLON.MeshBuilder.CreateCylinder('staff', {diameter:0.07, height:2.0}, scene);
-        staff.position.set(0, 0.2, 0.1); staff.parent = rArmPivot;
-        const sMat = new BABYLON.PBRMaterial('sMat', scene);
-        sMat.albedoColor = new BABYLON.Color3(0.35, 0.2, 0.1); sMat.roughness = 0.9; staff.material = sMat;
-        const crystal = BABYLON.MeshBuilder.CreateSphere('crystal', {diameter:0.2}, scene);
-        crystal.position.set(0, 1.2, 0.1); crystal.parent = rArmPivot;
-        const cMat = new BABYLON.StandardMaterial('cMat', scene);
-        cMat.emissiveColor = new BABYLON.Color3(0.8, 0.2, 1); crystal.material = cMat;
-    }
-
-    // Scale up
-    playerMesh.scaling = new BABYLON.Vector3(2.2, 2.2, 2.2);
-    camera.target = playerMesh.position;
-}
-
-// ── INPUT ──
-function setupInput() {
-    const canvas = document.getElementById('renderCanvas');
-    canvas.addEventListener('pointerdown', (evt) => {
-        if (evt.button !== 0) return;
-        const pickResult = scene.pick(scene.pointerX, scene.pointerY);
-        if (pickResult.hit) {
-            let found = null;
-            enemies.forEach(e => {
-                if (!e.alive) return;
-                e.meshes.forEach(m => {
-                    if (m === pickResult.pickedMesh) found = e;
-                });
-                // Also check parent
-                if (pickResult.pickedMesh && pickResult.pickedMesh.parent) {
-                    const parentName = pickResult.pickedMesh.parent.name || '';
-                    if (parentName === e.mesh.name) found = e;
-                }
-            });
-            if (found) {
-                targetEnemy = found;
-                showEnemyInfo(found);
-                addMessage('Alvo: '+found.name);
-            }
-        }
-    });
-    window.addEventListener('keydown', e => {
-        if (e.code === 'Digit1') useSkill(0);
-        if (e.code === 'Digit2') useSkill(1);
-        if (e.code === 'Digit3') useSkill(2);
-        if (e.code === 'Digit4') useSkill(3);
-        if (e.code === 'KeyE') interactNPC();
-    });
-}
-
-let playerMoving = false;
-function updatePlayer(dt) {
-    const spd = player.spd * dt * 6;
-    let mx = 0, mz = 0;
-    // Get camera forward direction projected on XZ plane
-    const camForward = camera.target.subtract(camera.position);
-    camForward.y = 0;
-    camForward.normalize();
-    const camRight = BABYLON.Vector3.Cross(camForward, BABYLON.Vector3.Up());
-    camRight.normalize();
-
-    if (keys['KeyW']) { mx += camForward.x*spd; mz += camForward.z*spd; }
-    if (keys['KeyS']) { mx -= camForward.x*spd; mz -= camForward.z*spd; }
-    if (keys['KeyA']) { mx -= camRight.x*spd; mz -= camRight.z*spd; }
-    if (keys['KeyD']) { mx += camRight.x*spd; mz += camRight.z*spd; }
-
-    playerMoving = (mx !== 0 || mz !== 0);
-    if (playerMoving) {
-        player.x += mx; player.z += mz;
-        playerMesh.position.x = player.x;
-        playerMesh.position.z = player.z;
-        playerMesh.rotation.y = Math.atan2(mx, mz);
-    }
-    camera.target.copyFrom(playerMesh.position);
-
-    // Walk animation
-    walkTime += dt * player.spd * 8;
-    if (playerMoving) {
-        const swing = Math.sin(walkTime) * 0.8;
-        playerLimbs.lArmPivot.rotation.x = swing;
-        playerLimbs.rArmPivot.rotation.x = -swing;
-        playerLimbs.lLegPivot.rotation.x = -swing * 0.7;
-        playerLimbs.rLegPivot.rotation.x = swing * 0.7;
-    } else {
-        const breath = Math.sin(walkTime * 0.5) * 0.06;
-        playerLimbs.lArmPivot.rotation.x = breath;
-        playerLimbs.rArmPivot.rotation.x = -breath;
-        playerLimbs.lLegPivot.rotation.x *= 0.9;
-        playerLimbs.rLegPivot.rotation.x *= 0.9;
-    }
-
-    // Cooldowns
-    player.cooldowns = player.cooldowns.map(c => Math.max(0, c - dt));
-}
-
-// ── ENEMIES ──
-const enemyData = [
-    {name:'Orc Guerreiro', type:'orc', hp:60, atk:8, def:4, xp:30, color:'#3A5A2A'},
-    {name:'Orc Guerreiro', type:'orc', hp:60, atk:8, def:4, xp:30, color:'#3A5A2A'},
-    {name:'Orc Guerreiro', type:'orc', hp:60, atk:8, def:4, xp:30, color:'#3A5A2A'},
-    {name:'Nazgul', type:'nazgul', hp:120, atk:15, def:8, xp:80, color:'#111111'},
-    {name:'Nazgul', type:'nazgul', hp:120, atk:15, def:8, xp:80, color:'#111111'},
-    {name:'Gollum', type:'gollum', hp:40, atk:6, def:2, xp:40, color:'#8A9A60'},
-    {name:'Saruman', type:'saruman', hp:200, atk:20, def:12, xp:200, color:'#FFFFFF'},
-    {name:'Smaug', type:'dragon', hp:500, atk:35, def:20, xp:500, color:'#AA2200'}
+const ED=[
+{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x3A5A2A},
+{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x3A5A2A},
+{name:'Orc',type:'orc',hp:60,atk:8,def:4,xp:30,color:0x3A5A2A},
+{name:'Nazgul',type:'nazgul',hp:120,atk:15,def:8,xp:80,color:0x111111},
+{name:'Nazgul',type:'nazgul',hp:120,atk:15,def:8,xp:80,color:0x111111},
+{name:'Gollum',type:'gollum',hp:40,atk:6,def:2,xp:40,color:0x8A9A60},
+{name:'Saruman',type:'saruman',hp:200,atk:20,def:12,xp:200,color:0xEEEEE},
+{name:'Smaug',type:'dragon',hp:500,atk:35,def:20,xp:500,color:0xA2200}
 ];
-
-function spawnEnemies() {
-    const positions = [[20,20],[35,10],[-30,20],[50,-30],[-50,-40],[60,50],[-70,70],[80,-70]];
-    enemyData.forEach((data, i) => {
-        const pos = positions[i];
-        const enemy = createEnemy(data, pos[0], pos[1]);
-        enemies.push(enemy);
-    });
-}
-
-function createEnemy(data, x, z) {
-    const root = new BABYLON.TransformNode('enemy_'+data.name+x, scene);
-    const mat = new BABYLON.PBRMaterial('eMat_'+x+z, scene);
-    mat.albedoColor = BABYLON.Color3.FromHexString(data.color);
-    mat.roughness = 0.7; mat.metallic = 0.1;
-    const skinMat = new BABYLON.PBRMaterial('eSkin_'+x+z, scene);
-    skinMat.albedoColor = new BABYLON.Color3(0.4, 0.35, 0.25); skinMat.roughness = 0.8;
-    const metalMat = new BABYLON.PBRMaterial('eMetal_'+x+z, scene);
-    metalMat.albedoColor = new BABYLON.Color3(0.3, 0.3, 0.35); metalMat.metallic = 0.7; metalMat.roughness = 0.3;
-    const meshes = [];
-
-    if (data.type === 'dragon') {
-        // Large angular dragon
-        const body = BABYLON.MeshBuilder.CreateBox('dBody', {width:4, height:3, depth:7}, scene);
-        body.position.y = 5; body.material = mat; body.parent = root; meshes.push(body);
-        const belly = BABYLON.MeshBuilder.CreateBox('dBelly', {width:3.5, height:1, depth:6}, scene);
-        belly.position.y = 3.5; belly.parent = root; meshes.push(belly);
-        const bellyMat = new BABYLON.PBRMaterial('bellyM', scene);
-        bellyMat.albedoColor = new BABYLON.Color3(0.8, 0.5, 0.1); bellyMat.roughness = 0.6; belly.material = bellyMat;
-        // Neck
-        const neck = BABYLON.MeshBuilder.CreateBox('dNeck', {width:1.2, height:1.2, depth:2.5}, scene);
-        neck.position.set(0, 6.5, 4); neck.material = mat; neck.parent = root; meshes.push(neck);
-        // Head
-        const head = BABYLON.MeshBuilder.CreateBox('dHead', {width:1.5, height:1.2, depth:2.5}, scene);
-        head.position.set(0, 7.5, 6.5); head.material = mat; head.parent = root; meshes.push(head);
-        // Jaw
-        const jaw = BABYLON.MeshBuilder.CreateBox('dJaw', {width:1.2, height:0.4, depth:2.0}, scene);
-        jaw.position.set(0, 6.8, 6.5); jaw.material = mat; jaw.parent = root; meshes.push(jaw);
-        // Eyes
-        const dEyeMat = new BABYLON.StandardMaterial('dEye', scene);
-        dEyeMat.emissiveColor = new BABYLON.Color3(1, 0.5, 0);
-        [-0.5, 0.5].forEach(ex => {
-            const eye = BABYLON.MeshBuilder.CreateBox('dEye', {width:0.3, height:0.15, depth:0.1}, scene);
-            eye.position.set(ex, 7.8, 7.5); eye.material = dEyeMat; eye.parent = root; meshes.push(eye);
-        });
-        // Horns
-        [-0.4, 0.4].forEach(hx => {
-            const horn = BABYLON.MeshBuilder.CreateCylinder('horn', {diameterTop:0, diameterBottom:0.3, height:1.5, tessellation:5}, scene);
-            horn.position.set(hx, 8.5, 5.5); horn.rotation.x = -0.6; horn.material = metalMat; horn.parent = root; meshes.push(horn);
-        });
-        // Wings
-        [-1,1].forEach(side => {
-            const wingBone = BABYLON.MeshBuilder.CreateBox('wBone', {width:8, height:0.3, depth:1}, scene);
-            wingBone.position.set(side*6, 6, 0); wingBone.material = mat; wingBone.parent = root; meshes.push(wingBone);
-            const membrane = BABYLON.MeshBuilder.CreateBox('wMem', {width:7, height:0.1, depth:4}, scene);
-            membrane.position.set(side*5.5, 5.5, -1); membrane.parent = root; meshes.push(membrane);
-            const memMat = new BABYLON.PBRMaterial('memM', scene);
-            memMat.albedoColor = new BABYLON.Color3(0.4, 0.1, 0.05); memMat.roughness = 0.9; membrane.material = memMat;
-        });
-        // Tail
-        for (let t=0; t<6; t++) {
-            const seg = BABYLON.MeshBuilder.CreateBox('tail'+t, {width:1.2-t*0.15, height:1.0-t*0.1, depth:1.5}, scene);
-            seg.position.set(0, 4.5-t*0.2, -4-t*1.5); seg.material = mat; seg.parent = root; meshes.push(seg);
-        }
-        // Legs
-        [[-1.5,2],[1.5,2],[-1.5,-2],[1.5,-2]].forEach(([lx,lz]) => {
-            const leg = BABYLON.MeshBuilder.CreateBox('dLeg', {width:0.8, height:3, depth:0.8}, scene);
-            leg.position.set(lx, 2, lz); leg.material = mat; leg.parent = root; meshes.push(leg);
-        });
-    } else {
-        // Humanoid enemies with full body
-        const scale = data.type === 'gollum' ? 0.7 : data.type === 'saruman' ? 1.1 : 1;
-        // Torso
-        const body = BABYLON.MeshBuilder.CreateBox('eBody', {width:0.8*scale, height:1.1*scale, depth:0.45*scale}, scene);
-        body.position.y = 1.55*scale; body.material = mat; body.parent = root; meshes.push(body);
-        // Head
-        const head = BABYLON.MeshBuilder.CreateBox('eHead', {width:0.55*scale, height:0.55*scale, depth:0.5*scale}, scene);
-        head.position.y = 2.4*scale; head.material = skinMat; head.parent = root; meshes.push(head);
-        // Eyes (red glowing)
-        const eyeMat = new BABYLON.StandardMaterial('eEye'+x, scene);
-        eyeMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
-        [-0.12, 0.12].forEach(ex => {
-            const eye = BABYLON.MeshBuilder.CreateSphere('eye', {diameter:0.08*scale}, scene);
-            eye.position.set(ex*scale, 2.5*scale, 0.25*scale); eye.material = eyeMat; eye.parent = root; meshes.push(eye);
-        });
-        // Arms
-        [-0.6, 0.6].forEach(ax => {
-            const arm = BABYLON.MeshBuilder.CreateBox('eArm', {width:0.22*scale, height:0.8*scale, depth:0.22*scale}, scene);
-            arm.position.set(ax*scale, 1.4*scale, 0); arm.material = mat; arm.parent = root; meshes.push(arm);
-            const hand = BABYLON.MeshBuilder.CreateBox('eHand', {width:0.16*scale, height:0.16*scale, depth:0.16*scale}, scene);
-            hand.position.set(ax*scale, 0.9*scale, 0); hand.material = skinMat; hand.parent = root; meshes.push(hand);
-        });
-        // Legs
-        [-0.2, 0.2].forEach(lx => {
-            const leg = BABYLON.MeshBuilder.CreateBox('eLeg', {width:0.28*scale, height:0.85*scale, depth:0.28*scale}, scene);
-            leg.position.set(lx*scale, 0.45*scale, 0); leg.material = mat; leg.parent = root; meshes.push(leg);
-        });
-        // Type-specific details
-        if (data.type === 'orc') {
-            // Armor plate
-            const armor = BABYLON.MeshBuilder.CreateBox('armor', {width:0.85*scale, height:0.6*scale, depth:0.1*scale}, scene);
-            armor.position.set(0, 1.7*scale, 0.25*scale); armor.material = metalMat; armor.parent = root; meshes.push(armor);
-            // Weapon (crude sword)
-            const sword = BABYLON.MeshBuilder.CreateBox('oSword', {width:0.06*scale, height:1.0*scale, depth:0.03*scale}, scene);
-            sword.position.set(0.7*scale, 1.5*scale, 0.2*scale); sword.material = metalMat; sword.parent = root; meshes.push(sword);
-        } else if (data.type === 'nazgul') {
-            // Hood
-            const hood = BABYLON.MeshBuilder.CreateBox('hood', {width:0.6*scale, height:0.4*scale, depth:0.6*scale}, scene);
-            hood.position.y = 2.7*scale; hood.material = mat; hood.parent = root; meshes.push(hood);
-            // Cloak
-            const cloak = BABYLON.MeshBuilder.CreateBox('cloak', {width:0.9*scale, height:1.5*scale, depth:0.2*scale}, scene);
-            cloak.position.set(0, 1.3*scale, -0.2*scale); cloak.material = mat; cloak.parent = root; meshes.push(cloak);
-            // Sword
-            const sword = BABYLON.MeshBuilder.CreateBox('nSword', {width:0.05*scale, height:1.4*scale, depth:0.03*scale}, scene);
-            sword.position.set(0.6*scale, 1.5*scale, 0.2*scale); sword.material = metalMat; sword.parent = root; meshes.push(sword);
-        } else if (data.type === 'saruman') {
-            // Staff
-            const staff = BABYLON.MeshBuilder.CreateCylinder('sStaff', {diameter:0.08*scale, height:2.2*scale}, scene);
-            staff.position.set(0.6*scale, 1.8*scale, 0); staff.material = metalMat; staff.parent = root; meshes.push(staff);
-            // Orb on staff
-            const orb = BABYLON.MeshBuilder.CreateSphere('orb', {diameter:0.25*scale}, scene);
-            orb.position.set(0.6*scale, 3.0*scale, 0); orb.parent = root; meshes.push(orb);
-            const orbMat = new BABYLON.StandardMaterial('orbMat', scene);
-            orbMat.emissiveColor = new BABYLON.Color3(0.5, 0, 0.8); orb.material = orbMat;
-            // Robe detail
-            const robe = BABYLON.MeshBuilder.CreateBox('robe', {width:0.9*scale, height:0.5*scale, depth:0.5*scale}, scene);
-            robe.position.y = 0.3*scale; robe.material = mat; robe.parent = root; meshes.push(robe);
-        } else if (data.type === 'gollum') {
-            // Loincloth
-            const cloth = BABYLON.MeshBuilder.CreateBox('cloth', {width:0.4*scale, height:0.2*scale, depth:0.3*scale}, scene);
-            cloth.position.y = 0.9*scale; cloth.parent = root; meshes.push(cloth);
-            const clothMat = new BABYLON.PBRMaterial('clothM', scene);
-            clothMat.albedoColor = new BABYLON.Color3(0.3, 0.25, 0.15); clothMat.roughness = 1; cloth.material = clothMat;
-        }
-    }
-    root.position.set(x, 0, z);
-    // Scale enemies to match player size
-    const enemyScale = data.type === 'dragon' ? 3.0 : data.type === 'gollum' ? 1.5 : data.type === 'saruman' ? 2.5 : 2.2;
-    root.scaling = new BABYLON.Vector3(enemyScale, enemyScale, enemyScale);
-    return { ...data, mesh: root, meshes, x, z, hp: data.hp, maxHp: data.hp, alive: true, attackTimer: 0 };
-}
-
-function updateEnemies(dt) {
-    enemies.forEach(e => {
-        if (!e.alive) return;
-        const dx = player.x - e.x, dz = player.z - e.z;
-        const dist = Math.sqrt(dx*dx + dz*dz);
-        if (dist < 20 && dist > 3) {
-            const spd = 2 * dt;
-            e.x += (dx/dist)*spd; e.z += (dz/dist)*spd;
-            e.mesh.position.x = e.x; e.mesh.position.z = e.z;
-            e.mesh.rotation = new BABYLON.Vector3(0, Math.atan2(dx, dz), 0);
-        }
-        if (dist < 4) {
-            e.attackTimer -= dt;
-            if (e.attackTimer <= 0) {
-                const dmg = Math.max(1, e.atk - player.def + Math.floor(Math.random()*3));
-                player.hp = Math.max(0, player.hp - dmg);
-                addMessage(e.name + ' ataca: -' + dmg + ' HP');
-                e.attackTimer = 2;
-                if (player.hp <= 0) gameOver();
-            }
-        }
-    });
-}
-
-// ── COMBAT ──
-const skillCooldowns = [1.5, 8, 12, 15];
-const skillMpCost = [0, 10, 15, 20];
-
-function useSkill(idx) {
-    if (player.cooldowns[idx] > 0) return;
-    if (player.mp < skillMpCost[idx]) { addMessage('Mana insuficiente!'); return; }
-    if (!targetEnemy || !targetEnemy.alive) {
-        let nearest = null, nearDist = 20;
-        enemies.forEach(e => {
-            if (!e.alive) return;
-            const dist = Math.sqrt((e.x-player.x)**2+(e.z-player.z)**2);
-            if (dist < nearDist) { nearest = e; nearDist = dist; }
-        });
-        if (nearest) { targetEnemy = nearest; showEnemyInfo(nearest); }
-        else { addMessage('Sem alvo!'); return; }
-    }
-    const dist = Math.sqrt((targetEnemy.x-player.x)**2+(targetEnemy.z-player.z)**2);
-    const range = selectedChar === 2 ? 20 : selectedChar === 3 ? 18 : 5;
-    if (dist > range) { addMessage('Muito longe!'); return; }
-    player.mp = Math.max(0, player.mp - skillMpCost[idx]);
-    player.cooldowns[idx] = skillCooldowns[idx];
-    const h = heroData[selectedChar];
-    let dmg = 0;
-    switch(idx) {
-        case 0: dmg = Math.max(1, player.atk - targetEnemy.def + Math.floor(Math.random()*5)); break;
-        case 1: dmg = Math.max(1, player.atk*2 - targetEnemy.def + Math.floor(Math.random()*8)); break;
-        case 2: dmg = Math.max(1, Math.floor(player.atk*1.5) + Math.floor(Math.random()*6)); break;
-        case 3: player.hp = Math.min(player.maxHp, player.hp + Math.floor(player.maxHp*0.3)); addMessage(h.skills[3]+': Curou!'); return;
-    }
-    dealDamage(targetEnemy, dmg);
-    addMessage(h.skills[idx] + ': -' + dmg + ' em ' + targetEnemy.name);
-    createHitParticles(targetEnemy.x, 2, targetEnemy.z);
-}
-
-function dealDamage(enemy, dmg) {
-    enemy.hp -= dmg;
-    if (enemy.hp <= 0) {
-        enemy.alive = false;
-        enemy.meshes.forEach(m => m.dispose());
-        enemy.mesh.dispose();
-        player.xp += enemy.xp;
-        addMessage(enemy.name + ' derrotado! +' + enemy.xp + ' XP');
-        checkLevelUp();
-        if (targetEnemy === enemy) { targetEnemy = null; document.getElementById('enemy-info').style.display = 'none'; }
-    }
-}
-
-function createHitParticles(x, y, z) {
-    const ps = new BABYLON.ParticleSystem('hit', 30, scene);
-    ps.particleTexture = new BABYLON.Texture('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA0SURBVChTY/j//z8DAwMDIwMEMIEpBgYGRgYIYAJTDAwMjAwQwASmGBgYGBkggAlMAQMAAPkABf8JlLIAAAAASUVORK5CYII=', scene);
-    ps.emitter = new BABYLON.Vector3(x, y, z);
-    ps.color1 = new BABYLON.Color4(1, 0.3, 0, 1);
-    ps.color2 = new BABYLON.Color4(1, 0.8, 0, 0.8);
-    ps.minSize = 0.1; ps.maxSize = 0.4;
-    ps.minLifeTime = 0.2; ps.maxLifeTime = 0.5;
-    ps.emitRate = 100;
-    ps.direction1 = new BABYLON.Vector3(-2, 2, -2);
-    ps.direction2 = new BABYLON.Vector3(2, 4, 2);
-    ps.gravity = new BABYLON.Vector3(0, -5, 0);
-    ps.start();
-    setTimeout(() => { ps.stop(); setTimeout(() => ps.dispose(), 1000); }, 200);
-}
-
-function checkLevelUp() {
-    while (player.xp >= player.xpNext) {
-        player.xp -= player.xpNext;
-        player.level++;
-        player.xpNext = Math.floor(player.xpNext * 1.5);
-        player.maxHp += 15; player.hp = player.maxHp;
-        player.maxMp += 5; player.mp = player.maxMp;
-        player.atk += 3; player.def += 2;
-        addMessage('LEVEL UP! Nivel ' + player.level);
-    }
-}
-
-function gameOver() { gameStarted = false; addMessage('GAME OVER - Recarregue a pagina'); }
-
-// ── NPCs ──
-const npcData = [
-    {name:'Gandalf', x:-10, z:-45, color:'#CCCCCC', quest:'Derrote 3 Orcs nas redondezas.', target:'orc', needed:3},
-    {name:'Aragorn', x:10, z:-45, color:'#4A3010', quest:'Elimine 2 Nazgul nas planicies.', target:'nazgul', needed:2},
-    {name:'Legolas', x:-30, z:30, color:'#44AA44', quest:'Rastreie e capture Gollum.', target:'gollum', needed:1},
-    {name:'Frodo', x:30, z:30, color:'#8B6914', quest:'Derrote o dragao Smaug!', target:'dragon', needed:1}
+const EP=[[25,25],[40,10],[-35,25],[55,-35],[-55,-45],[65,55],[-75,75],[90,-80]];
+const ND=[
+{name:'Gandalf',x:-12,z:-50,color:0xCCCCCC,quest:'Derrote 3 Orcs.'},
+{name:'Aragorn',x:12,z:-50,color:0x4A3010,quest:'Elimine 2 Nazgul.'},
+{name:'Legolas',x:-35,z:35,color:0x44AA44,quest:'Capture Gollum.'},
+{name:'Frodo',x:35,z:35,color:0x8B6914,quest:'Derrote Smaug!'}
 ];
-
-function spawnNPCs() {
-    npcData.forEach(data => {
-        const root = new BABYLON.TransformNode('npc_'+data.name, scene);
-        const mat = new BABYLON.PBRMaterial('npcMat_'+data.name, scene);
-        mat.albedoColor = BABYLON.Color3.FromHexString(data.color);
-        mat.roughness = 0.6;
-        const skinMat = new BABYLON.PBRMaterial('nSkin_'+data.name, scene);
-        skinMat.albedoColor = new BABYLON.Color3(0.85, 0.65, 0.45); skinMat.roughness = 0.8;
-
-        // Body
-        const body = BABYLON.MeshBuilder.CreateBox('nBody_'+data.name, {width:0.8, height:1.2, depth:0.5}, scene);
-        body.position.y = 1.55; body.material = mat; body.parent = root;
-        // Head
-        const head = BABYLON.MeshBuilder.CreateBox('nHead_'+data.name, {width:0.6, height:0.6, depth:0.55}, scene);
-        head.position.y = 2.5; head.material = skinMat; head.parent = root;
-        // Eyes
-        const eyeMat = new BABYLON.StandardMaterial('nEye_'+data.name, scene);
-        eyeMat.diffuseColor = new BABYLON.Color3(1,1,1);
-        [-0.12, 0.12].forEach(ex => {
-            const eye = BABYLON.MeshBuilder.CreateSphere('neye', {diameter:0.08}, scene);
-            eye.position.set(ex, 2.55, 0.28); eye.material = eyeMat; eye.parent = root;
-        });
-        // Arms
-        [-0.55, 0.55].forEach(ax => {
-            const arm = BABYLON.MeshBuilder.CreateBox('nArm', {width:0.22, height:0.8, depth:0.22}, scene);
-            arm.position.set(ax, 1.5, 0); arm.material = mat; arm.parent = root;
-        });
-        // Legs
-        [-0.18, 0.18].forEach(lx => {
-            const leg = BABYLON.MeshBuilder.CreateBox('nLeg', {width:0.28, height:0.85, depth:0.28}, scene);
-            leg.position.set(lx, 0.45, 0); leg.material = mat; leg.parent = root;
-        });
-
-        // Character-specific details
-        if (data.name === 'Gandalf') {
-            const hat = BABYLON.MeshBuilder.CreateCylinder('hat', {diameterTop:0, diameterBottom:0.8, height:1.0, tessellation:6}, scene);
-            hat.position.y = 3.2; hat.material = mat; hat.parent = root;
-            const staff = BABYLON.MeshBuilder.CreateCylinder('staff', {diameter:0.08, height:2.5}, scene);
-            staff.position.set(0.6, 1.8, 0); staff.parent = root;
-            const stMat = new BABYLON.PBRMaterial('stMat', scene);
-            stMat.albedoColor = new BABYLON.Color3(0.35, 0.2, 0.1); stMat.roughness = 0.9; staff.material = stMat;
-        } else if (data.name === 'Aragorn') {
-            const cloak = BABYLON.MeshBuilder.CreateBox('cloak', {width:0.85, height:1.3, depth:0.15}, scene);
-            cloak.position.set(0, 1.5, -0.25); cloak.material = mat; cloak.parent = root;
-            const sword = BABYLON.MeshBuilder.CreateBox('sword', {width:0.06, height:1.3, depth:0.03}, scene);
-            sword.position.set(0.6, 1.5, 0); sword.parent = root;
-            const sMat = new BABYLON.PBRMaterial('swMat', scene);
-            sMat.albedoColor = new BABYLON.Color3(0.8, 0.8, 0.85); sMat.metallic = 0.9; sMat.roughness = 0.1; sword.material = sMat;
-        } else if (data.name === 'Legolas') {
-            const bow = BABYLON.MeshBuilder.CreateTorus('bow', {diameter:0.7, thickness:0.04, tessellation:12}, scene);
-            bow.position.set(-0.6, 1.5, 0); bow.rotation.z = Math.PI/2; bow.parent = root;
-            const bMat = new BABYLON.PBRMaterial('bowMat', scene);
-            bMat.albedoColor = new BABYLON.Color3(0.5, 0.3, 0.15); bMat.roughness = 0.8; bow.material = bMat;
-        } else if (data.name === 'Frodo') {
-            root.scaling = new BABYLON.Vector3(0.8, 0.8, 0.8);
-            const hair = BABYLON.MeshBuilder.CreateSphere('hair', {diameter:0.5}, scene);
-            hair.position.y = 2.8; hair.parent = root;
-            const hMat = new BABYLON.PBRMaterial('hairMat', scene);
-            hMat.albedoColor = new BABYLON.Color3(0.2, 0.12, 0.05); hMat.roughness = 0.9; hair.material = hMat;
-        }
-
-        // Quest marker (!)
-        const mMat = new BABYLON.StandardMaterial('mMat_'+data.name, scene);
-        mMat.emissiveColor = new BABYLON.Color3(1, 0.85, 0); mMat.disableLighting = true;
-        const marker = BABYLON.MeshBuilder.CreateBox('marker_'+data.name, {width:0.3, height:0.6, depth:0.3}, scene);
-        marker.position.y = 4.2; marker.material = mMat; marker.parent = root;
-        const markerDot = BABYLON.MeshBuilder.CreateBox('mDot_'+data.name, {width:0.25, height:0.25, depth:0.25}, scene);
-        markerDot.position.y = 3.7; markerDot.material = mMat; markerDot.parent = root;
-
-        root.scaling = root.scaling || new BABYLON.Vector3(1,1,1);
-        root.scaling.scaleInPlace(2.2);
-        root.position.set(data.x, 0, data.z);
-        npcs.push({...data, mesh: root, marker, progress:0, done:false});
-    });
+let sc,cam,renderer,player,pMesh,enemies=[],npcs=[],loot=[],target=null;
+let keys={},wt=0,moving=false,mounted=false,mMesh=null,baseSpd=0;
+let MAP=100,running=false,charIdx=0;
+// CEL SHADER
+const celVert=`varying vec3 vNormal;varying vec3 vPos;void main(){vNormal=normalize(normalMatrix*normal);vPos=(modelViewMatrix*vec4(position,1.0)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`;
+const celFrag=`uniform vec3 uColor;uniform vec3 uLight;varying vec3 vNormal;varying vec3 vPos;void main(){float d=dot(normalize(vNormal),normalize(uLight));float i=d>0.6?1.0:d>0.3?0.7:d>0.0?0.45:0.25;gl_FragColor=vec4(uColor*i,1.0);}`;
+function celMat(color){
+const c=new THREE.Color(color);
+return new THREE.ShaderMaterial({uniforms:{uColor:{value:c},uLight:{value:new THREE.Vector3(0.5,1.0,0.3).normalize()}},vertexShader:celVert,fragmentShader:celFrag});
 }
-
-function interactNPC() {
-    let closest = null, closeDist = 8;
-    npcs.forEach(npc => {
-        const dist = Math.sqrt((npc.x-player.x)**2+(npc.z-player.z)**2);
-        if (dist < closeDist) { closest = npc; closeDist = dist; }
-    });
-    if (!closest) return;
-    const db = document.getElementById('dialog-box');
-    document.getElementById('dialog-name').textContent = closest.name;
-    document.getElementById('dialog-text').textContent = closest.done ? 'Missao completa! Obrigado, heroi!' : closest.quest;
-    db.style.display = 'block';
-    document.getElementById('dialog-accept').onclick = () => { db.style.display = 'none'; addMessage('Quest aceita: ' + closest.quest); };
-    document.getElementById('dialog-close').onclick = () => { db.style.display = 'none'; };
+// OUTLINE
+const outVert=`void main(){vec3 p=position+normal*0.03;gl_Position=projectionMatrix*modelViewMatrix*vec4(p,1.0);}`;
+const outFrag=`void main(){gl_FragColor=vec4(0.0,0.0,0.0,1.0);}`;
+const outMat=new THREE.ShaderMaterial({vertexShader:outVert,fragmentShader:outFrag,side:THREE.BackSide});
+function addOutline(mesh){const o=mesh.clone();o.material=outMat;o.scale.multiplyScalar(1.05);mesh.parent.add(o);}
+// START
+function start(ci){
+charIdx=ci;
+document.getElementById('intro').style.display='none';
+document.getElementById('hud').style.display='block';
+const h=H[ci];
+player={x:0,z:0,hp:h.hp,maxHp:h.hp,mp:h.mp,maxMp:h.mp,xp:0,xpNext:100,level:1,atk:h.atk,def:h.def,spd:h.spd,cd:[0,0,0,0]};
+document.getElementById('pname').textContent=h.name+' - '+h.cls;
+init();
+running=true;
+msg('Bem-vindo, '+h.name+'!');
+msg('WASD: mover | 1-4: skills | Clique: alvo | E: NPC');
 }
-
-// ── HUD ──
-function updateHUD() {
-    document.querySelector('#hp-bar .bar-fill').style.width = (player.hp/player.maxHp*100)+'%';
-    document.querySelector('#hp-bar .bar-label').textContent = player.hp+'/'+player.maxHp;
-    document.querySelector('#mp-bar .bar-fill').style.width = (player.mp/player.maxMp*100)+'%';
-    document.querySelector('#mp-bar .bar-label').textContent = Math.floor(player.mp)+'/'+player.maxMp;
-    document.getElementById('xp-fill').style.width = (player.xp/player.xpNext*100)+'%';
-    document.getElementById('level-label').textContent = 'Nivel '+player.level;
-    document.querySelectorAll('.skill-btn').forEach((btn, i) => {
-        const cd = btn.querySelector('.cd-overlay');
-        if (player.cooldowns[i] > 0) { cd.style.display='block'; cd.textContent=player.cooldowns[i].toFixed(1); cd.style.lineHeight='50px'; cd.style.textAlign='center'; cd.style.color='#fff'; cd.style.fontSize='12px'; }
-        else cd.style.display = 'none';
-    });
-    if (targetEnemy && targetEnemy.alive) {
-        document.getElementById('enemy-info').style.display = 'block';
-        document.getElementById('enemy-name').textContent = targetEnemy.name;
-        document.getElementById('enemy-hp-fill').style.width = (targetEnemy.hp/targetEnemy.maxHp*100)+'%';
-    }
-    npcs.forEach(npc => { npc.marker.position.y = 4 + Math.sin(Date.now()*0.003)*0.3; });
+function init(){
+sc=new THREE.Scene();
+sc.background=new THREE.Color(0x87CEEB);
+sc.fog=new THREE.FogExp2(0x87CEEB,0.008);
+// Camera
+cam=new THREE.PerspectiveCamera(60,window.innerWidth/window.innerHeight,0.1,500);
+cam.position.set(0,12,-18);
+// Renderer
+renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.shadowMap.enabled=true;
+renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.body.appendChild(renderer.domElement);
+// Lights
+const sun=new THREE.DirectionalLight(0xFFEECC,1.5);
+sun.position.set(30,50,20);sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+sun.shadow.camera.left=-80;sun.shadow.camera.right=80;
+sun.shadow.camera.top=80;sun.shadow.camera.bottom=-80;
+sc.add(sun);
+const amb=new THREE.HemisphereLight(0x88BBFF,0x445522,0.6);
+sc.add(amb);
+// Terrain
+const gGeo=new THREE.PlaneGeometry(MAP*2,MAP*2,40,40);
+gGeo.rotateX(-Math.PI/2);
+// Vertex colors for terrain variation
+const colors=[];
+for(let i=0;i<gGeo.attributes.position.count;i++){
+const r=0.15+Math.random()*0.15;
+const g=0.4+Math.random()*0.25;
+const b=0.05+Math.random()*0.1;
+colors.push(r,g,b);
 }
-
-function showEnemyInfo(e) {
-    document.getElementById('enemy-info').style.display = 'block';
-    document.getElementById('enemy-name').textContent = e.name;
-    document.getElementById('enemy-hp-fill').style.width = (e.hp/e.maxHp*100)+'%';
+gGeo.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+const gMat=new THREE.MeshLambertMaterial({vertexColors:true});
+const ground=new THREE.Mesh(gGeo,gMat);
+ground.receiveShadow=true;
+sc.add(ground);
+// Trees
+for(let i=0;i<100;i++){
+const x=(Math.random()-0.5)*MAP*1.8,z=(Math.random()-0.5)*MAP*1.8;
+if(Math.abs(x)<12&&Math.abs(z)<12)continue;
+mkTree(x,z);
 }
-
-function updateMinimap() {
-    const mc = document.getElementById('minimap');
-    const ctx = mc.getContext('2d');
-    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(0,0,140,140);
-    const scale = 140/(MAP_SIZE*2);
-    enemies.forEach(e => { if (!e.alive) return; ctx.fillStyle='#FF0000'; ctx.fillRect((e.x+MAP_SIZE)*scale-2,(e.z+MAP_SIZE)*scale-2,4,4); });
-    npcs.forEach(n => { ctx.fillStyle='#FFD700'; ctx.fillRect((n.x+MAP_SIZE)*scale-2,(n.z+MAP_SIZE)*scale-2,4,4); });
-    ctx.fillStyle = '#00FF00'; ctx.beginPath(); ctx.arc((player.x+MAP_SIZE)*scale,(player.z+MAP_SIZE)*scale,4,0,Math.PI*2); ctx.fill();
+// Rocks
+for(let i=0;i<50;i++){
+const x=(Math.random()-0.5)*MAP*1.8,z=(Math.random()-0.5)*MAP*1.8;
+mkRock(x,z);
 }
-
-function addMessage(text) {
-    const log = document.getElementById('msg-log');
-    const msg = document.createElement('div');
-    msg.className = 'msg'; msg.textContent = text;
-    log.appendChild(msg);
-    if (log.children.length > 6) log.removeChild(log.firstChild);
-    setTimeout(() => { msg.style.opacity='0'; setTimeout(()=>msg.remove(),1000); }, 4000);
+// Castle
+mkCastle();
+// Player
+mkPlayer();
+// Enemies
+ED.forEach((d,i)=>{enemies.push(mkEnemy(d,EP[i][0],EP[i][1]));});
+// NPCs
+ND.forEach(d=>{npcs.push(mkNPC(d));});
+// Loot
+for(let i=0;i<15;i++){
+const x=(Math.random()-0.5)*MAP*1.5,z=(Math.random()-0.5)*MAP*1.5;
+const type=Math.random()<0.5?'hp':'mp';
+const m=new THREE.Mesh(new THREE.SphereGeometry(0.4,8,8),new THREE.MeshBasicMaterial({color:type==='hp'?0xFF3333:0x3333FF}));
+m.position.set(x,1.2,z);sc.add(m);
+loot.push({mesh:m,x,z,type,got:false});
 }
-
-function resetGame() { location.reload(); }
-
-// ── MUSIC (FM Synthesis) ──
-const AC = window.AudioContext || window.webkitAudioContext;
-let ac = null;
-function initAudio() {
-    if (ac) return;
-    ac = new AC(); ac.resume();
-    const gain = ac.createGain(); gain.gain.value = 0.3; gain.connect(ac.destination);
-    function playLoop() {
-        if (!gameStarted) return;
-        const t = ac.currentTime;
-        const notes = [130,147,165,147,130,110,130,165,196,175];
-        let mt = t;
-        notes.forEach(freq => {
-            const mod = ac.createOscillator(), modG = ac.createGain();
-            mod.frequency.value = freq*2; modG.gain.value = freq*0.3;
-            const car = ac.createOscillator(); car.frequency.value = freq;
-            mod.connect(modG); modG.connect(car.frequency);
-            const env = ac.createGain();
-            env.gain.setValueAtTime(0, mt);
-            env.gain.linearRampToValueAtTime(0.06, mt+0.3);
-            env.gain.linearRampToValueAtTime(0, mt+2);
-            car.connect(env); env.connect(gain);
-            mod.start(mt); car.start(mt); mod.stop(mt+2); car.stop(mt+2);
-            mt += 2;
-        });
-        setTimeout(playLoop, 20000);
-    }
-    playLoop();
+// Input
+window.addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='Digit1')skill(0);if(e.code==='Digit2')skill(1);if(e.code==='Digit3')skill(2);if(e.code==='Digit4')skill(3);if(e.code==='KeyE')talkNPC();if(e.code==='KeyM')toggleMount();});
+window.addEventListener('keyup',e=>{keys[e.code]=false;});
+renderer.domElement.addEventListener('click',onClick);
+window.addEventListener('resize',()=>{cam.aspect=window.innerWidth/window.innerHeight;cam.updateProjectionMatrix();renderer.setSize(window.innerWidth,window.innerHeight);});
+animate();
 }
-
-// ── FIRST PERSON MODE ──
-let fpMode = false, fpCamera = null;
-
-function toggleFPMode() {
-    fpMode = !fpMode;
-    if (fpMode) {
-        addMessage('Primeira Pessoa | V: voltar | Clique: alvo');
-        document.getElementById('crosshair').style.display = 'block';
-        fpCamera = new BABYLON.FreeCamera('fpCam', new BABYLON.Vector3(player.x, 4, player.z), scene);
-        fpCamera.rotation.y = playerMesh.rotation.y;
-        fpCamera.minZ = 0.1;
-        scene.activeCamera = fpCamera;
-        const canvas = document.getElementById('renderCanvas');
-        canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
-        canvas.requestPointerLock();
-        // Mouse look
-        fpCamera.inputs.clear();
-        document.addEventListener('mousemove', fpMouseMove);
-    } else {
-        addMessage('Terceira Pessoa');
-        document.getElementById('crosshair').style.display = 'none';
-        scene.activeCamera = camera;
-        camera.target.copyFrom(playerMesh.position);
-        document.removeEventListener('mousemove', fpMouseMove);
-        document.exitPointerLock();
-    }
+ // TREE
+function mkTree(x,z){
+const h=3+Math.random()*3;
+const trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.15,0.35,h,8),celMat(0x6B3A1E));
+trunk.position.set(x,h/2,z);trunk.castShadow=true;sc.add(trunk);
+for(let i=0;i<2+Math.floor(Math.random()*2);i++){
+const s=2+Math.random()*1.5;
+const leaf=new THREE.Mesh(new THREE.SphereGeometry(s,8,6),celMat(0x228B22+Math.floor(Math.random()*0x224400)));
+leaf.position.set(x+(Math.random()-0.5)*1.2,h+1+i*1.2,z+(Math.random()-0.5)*1.2);
+leaf.castShadow=true;sc.add(leaf);
+}}
+// ROCK
+function mkRock(x,z){
+const s=0.5+Math.random()*1.5;
+const r=new THREE.Mesh(new THREE.DodecahedronGeometry(s,0),celMat(0x666666+Math.floor(Math.random()*0x222222)));
+r.position.set(x,s*0.5,z);r.rotation.set(Math.random(),Math.random(),Math.random());
+r.castShadow=true;sc.add(r);
 }
-
-function fpMouseMove(e) {
-    if (!fpMode || !fpCamera) return;
-    fpCamera.rotation.y += e.movementX * 0.002;
-    fpCamera.rotation.x += e.movementY * 0.002;
-    fpCamera.rotation.x = Math.max(-1.2, Math.min(1.2, fpCamera.rotation.x));
-}
-
-function updateFP(dt) {
-    if (!fpMode || !fpCamera) return;
-    const spd = player.spd * dt * 6;
-    const yaw = fpCamera.rotation.y;
-    let mx = 0, mz = 0;
-    if (keys['KeyW']) { mx += Math.sin(yaw)*spd; mz += Math.cos(yaw)*spd; }
-    if (keys['KeyS']) { mx -= Math.sin(yaw)*spd; mz -= Math.cos(yaw)*spd; }
-    if (keys['KeyA']) { mx += Math.sin(yaw-Math.PI/2)*spd; mz += Math.cos(yaw-Math.PI/2)*spd; }
-    if (keys['KeyD']) { mx += Math.sin(yaw+Math.PI/2)*spd; mz += Math.cos(yaw+Math.PI/2)*spd; }
-    player.x += mx; player.z += mz;
-    fpCamera.position.x = player.x;
-    fpCamera.position.z = player.z;
-    fpCamera.position.y = 4;
-    playerMesh.position.x = player.x;
-    playerMesh.position.z = player.z;
-}
-
-// ── MOUNT SYSTEM ──
-let mounted = false, mountMesh = null, baseSpeed = 0;
-
-function toggleMount() {
-    if (mounted) {
-        mounted = false;
-        if (mountMesh) { mountMesh.dispose(); mountMesh = null; }
-        player.spd = baseSpeed;
-        addMessage('Desmontou.');
-    } else {
-        mounted = true;
-        baseSpeed = player.spd;
-        player.spd = baseSpeed * 2.2;
-        // Create horse mesh
-        mountMesh = new BABYLON.TransformNode('mount', scene);
-        const bodyMat = new BABYLON.PBRMaterial('horseMat', scene);
-        bodyMat.albedoColor = new BABYLON.Color3(0.4, 0.25, 0.1); bodyMat.roughness = 0.8;
-        const body = BABYLON.MeshBuilder.CreateBox('hBody', {width:1.2, height:1.0, depth:2.5}, scene);
-        body.position.y = 1.5; body.material = bodyMat; body.parent = mountMesh;
-        const head = BABYLON.MeshBuilder.CreateBox('hHead', {width:0.5, height:0.6, depth:1.0}, scene);
-        head.position.set(0, 2.2, 1.5); head.material = bodyMat; head.parent = mountMesh;
-        const neck = BABYLON.MeshBuilder.CreateBox('hNeck', {width:0.4, height:0.8, depth:0.4}, scene);
-        neck.position.set(0, 2.0, 1.0); neck.material = bodyMat; neck.parent = mountMesh;
-        // 4 legs
-        [[-0.4,0.8],[-0.4,-0.8],[0.4,0.8],[0.4,-0.8]].forEach(([lx,lz]) => {
-            const leg = BABYLON.MeshBuilder.CreateBox('hLeg', {width:0.2, height:1.2, depth:0.2}, scene);
-            leg.position.set(lx, 0.6, lz); leg.material = bodyMat; leg.parent = mountMesh;
-        });
-        mountMesh.scaling = new BABYLON.Vector3(2, 2, 2);
-        mountMesh.position.set(player.x, 0, player.z);
-        addMessage('Montou! Velocidade dobrada!');
-    }
-}
-
-// ── REGIONS ──
-const regions = [
-    {name:'O Condado', x:0, z:0, radius:30, color:[0.3,0.5,0.2]},
-    {name:'Rohan', x:50, z:30, radius:35, color:[0.6,0.5,0.2]},
-    {name:'Mordor', x:80, z:-70, radius:40, color:[0.15,0.05,0.02]},
-    {name:'Rivendell', x:-60, z:-35, radius:30, color:[0.2,0.4,0.5]},
-    {name:'Mirkwood', x:-50, z:60, radius:35, color:[0.1,0.25,0.1]}
-];
-let currentRegion = '';
-
-function getRegion(x, z) {
-    for (const r of regions) {
-        const dist = Math.sqrt((x-r.x)**2 + (z-r.z)**2);
-        if (dist < r.radius) return r.name;
-    }
-    return 'Terras Selvagens';
-}
-
-function updateRegion() {
-    const r = getRegion(player.x, player.z);
-    if (r !== currentRegion) {
-        currentRegion = r;
-        addMessage('Regiao: ' + r);
-    }
-}
-
-// ── LOOT SYSTEM ──
-let lootItems = [];
-
-function spawnLoot() {
-    for (let i = 0; i < 15; i++) {
-        const x = (Math.random()-0.5)*MAP_SIZE*1.5;
-        const z = (Math.random()-0.5)*MAP_SIZE*1.5;
-        const type = Math.random() < 0.5 ? 'hp' : 'mp';
-        const mat = new BABYLON.StandardMaterial('lootMat'+i, scene);
-        mat.emissiveColor = type === 'hp' ? new BABYLON.Color3(1,0.2,0.2) : new BABYLON.Color3(0.2,0.2,1);
-        mat.disableLighting = true;
-        const mesh = BABYLON.MeshBuilder.CreateSphere('loot'+i, {diameter:0.8}, scene);
-        mesh.position.set(x, 1.5, z); mesh.material = mat;
-        lootItems.push({mesh, x, z, type, collected:false});
-    }
-}
-
-function checkLoot() {
-    lootItems.forEach(l => {
-        if (l.collected) return;
-        const dist = Math.sqrt((l.x-player.x)**2+(l.z-player.z)**2);
-        if (dist < 3) {
-            l.collected = true;
-            l.mesh.dispose();
-            if (l.type === 'hp') {
-                const heal = Math.floor(player.maxHp*0.2);
-                player.hp = Math.min(player.maxHp, player.hp+heal);
-                addMessage('Pocao de Vida: +'+heal+' HP');
-            } else {
-                const mana = Math.floor(player.maxMp*0.3);
-                player.mp = Math.min(player.maxMp, player.mp+mana);
-                addMessage('Pocao de Mana: +'+mana+' MP');
-            }
-        }
-    });
-    // Animate loot bobbing
-    lootItems.forEach(l => {
-        if (!l.collected) l.mesh.position.y = 1.5 + Math.sin(Date.now()*0.003 + l.x)*0.3;
-    });
-}
-
-// ── DRAGON FIRE BREATH ──
-let dragonFirePS = null;
-
-function createDragonFire(dragon) {
-    if (!dragon || !dragon.alive) return;
-    dragonFirePS = new BABYLON.ParticleSystem('dragonFire', 100, scene);
-    dragonFirePS.particleTexture = new BABYLON.Texture('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA0SURBVChTY/j//z8DAwMDIwMEMIEpBgYGRgYIYAJTDAwMjAwQwASmGBgYGBkggAlMAQMAAPkABf8JlLIAAAAASUVORK5CYII=', scene);
-    dragonFirePS.emitter = new BABYLON.Vector3(dragon.x, 7, dragon.z+5);
-    dragonFirePS.minEmitBox = new BABYLON.Vector3(-0.3, -0.3, 0);
-    dragonFirePS.maxEmitBox = new BABYLON.Vector3(0.3, 0.3, 0);
-    dragonFirePS.color1 = new BABYLON.Color4(1, 0.4, 0, 1);
-    dragonFirePS.color2 = new BABYLON.Color4(1, 0.8, 0, 0.6);
-    dragonFirePS.colorDead = new BABYLON.Color4(0.2, 0, 0, 0);
-    dragonFirePS.minSize = 0.3; dragonFirePS.maxSize = 1.0;
-    dragonFirePS.minLifeTime = 0.3; dragonFirePS.maxLifeTime = 0.8;
-    dragonFirePS.emitRate = 60;
-    dragonFirePS.direction1 = new BABYLON.Vector3(-1, 0.5, 3);
-    dragonFirePS.direction2 = new BABYLON.Vector3(1, 1, 5);
-    dragonFirePS.gravity = new BABYLON.Vector3(0, -1, 0);
-    dragonFirePS.start();
-}
-
-function updateDragonFire() {
-    const dragon = enemies.find(e => e.type === 'dragon' && e.alive);
-    if (!dragon) { if (dragonFirePS) { dragonFirePS.stop(); dragonFirePS.dispose(); dragonFirePS = null; } return; }
-    const dist = Math.sqrt((dragon.x-player.x)**2+(dragon.z-player.z)**2);
-    if (dist < 15 && !dragonFirePS) {
-        createDragonFire(dragon);
-    } else if (dist >= 15 && dragonFirePS) {
-        dragonFirePS.stop(); dragonFirePS.dispose(); dragonFirePS = null;
-    }
-    if (dragonFirePS) {
-        dragonFirePS.emitter = new BABYLON.Vector3(dragon.x, 7, dragon.z + 3);
-    }
-}
-
-// ── DYNAMIC MUSIC ──
-let musicState = 'peace';
-
-function updateMusic() {
-    if (!ac) return;
-    let nearestDist = 999;
-    enemies.forEach(e => {
-        if (!e.alive) return;
-        const dist = Math.sqrt((e.x-player.x)**2+(e.z-player.z)**2);
-        if (dist < nearestDist) nearestDist = dist;
-    });
-    const newState = nearestDist < 8 ? 'combat' : nearestDist < 20 ? 'suspense' : 'peace';
-    if (newState !== musicState) {
-        musicState = newState;
-        playMusicState();
-    }
-}
-
-function playMusicState() {
-    if (!ac) return;
-    const gain = ac.createGain(); gain.gain.value = 0.15; gain.connect(ac.destination);
-    const t = ac.currentTime;
-    if (musicState === 'combat') {
-        // Aggressive drums + brass
-        for (let i=0; i<4; i++) {
-            const osc = ac.createOscillator();
-            osc.frequency.setValueAtTime(55, t+i*0.5);
-            osc.frequency.exponentialRampToValueAtTime(28, t+i*0.5+0.15);
-            const env = ac.createGain();
-            env.gain.setValueAtTime(0.3, t+i*0.5);
-            env.gain.exponentialRampToValueAtTime(0.01, t+i*0.5+0.2);
-            osc.connect(env); env.connect(gain);
-            osc.start(t+i*0.5); osc.stop(t+i*0.5+0.3);
-        }
-    } else if (musicState === 'suspense') {
-        // Dark drone
-        const osc = ac.createOscillator(); osc.type = 'sawtooth'; osc.frequency.value = 65;
-        const env = ac.createGain();
-        env.gain.setValueAtTime(0, t); env.gain.linearRampToValueAtTime(0.05, t+1); env.gain.linearRampToValueAtTime(0, t+4);
-        osc.connect(env); env.connect(gain);
-        osc.start(t); osc.stop(t+4);
-    }
-}
-
-// ── START ──
-document.querySelectorAll('.intro-card').forEach(card => {
-    card.addEventListener('click', () => { startGameWithChar(parseInt(card.dataset.char)); initAudio(); });
+// CASTLE
+function mkCastle(){
+const wm=celMat(0x8B7355);
+[[-15,-40],[15,-40],[15,-60],[-15,-60]].forEach(([tx,tz])=>{
+const t=new THREE.Mesh(new THREE.CylinderGeometry(2,2.2,14,8),wm);
+t.position.set(tx,7,tz);t.castShadow=true;sc.add(t);
+const rf=new THREE.Mesh(new THREE.ConeGeometry(3,4,8),celMat(0x8B0000));
+rf.position.set(tx,16,tz);sc.add(rf);
 });
+const wall=new THREE.Mesh(new THREE.BoxGeometry(32,8,2),wm);
+wall.position.set(0,4,-40);wall.castShadow=true;sc.add(wall);
+const wall2=wall.clone();wall2.position.set(0,4,-60);sc.add(wall2);
+const wall3=new THREE.Mesh(new THREE.BoxGeometry(2,8,22),wm);
+wall3.position.set(-15,4,-50);sc.add(wall3);
+const wall4=wall3.clone();wall4.position.set(15,4,-50);sc.add(wall4);
+}
+// PLAYER
+let limbs={};
+function mkPlayer(){
+const h=H[charIdx];
+pMesh=new THREE.Group();
+// Body
+const body=new THREE.Mesh(new THREE.BoxGeometry(0.9,1.2,0.5),celMat(h.color));
+body.position.y=1.6;body.castShadow=true;pMesh.add(body);
+// Head
+const head=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.6,0.6),celMat(0xDEB887));
+head.position.y=2.5;head.castShadow=true;pMesh.add(head);
+// Eyes
+const eyeM=new THREE.MeshBasicMaterial({color:0xFFFFFF});
+const pupilM=new THREE.MeshBasicMaterial({color:0x000000});
+[-0.12,0.12].forEach(ex=>{
+const e=new THREE.Mesh(new THREE.SphereGeometry(0.06,6,6),eyeM);
+e.position.set(ex,2.55,0.3);pMesh.add(e);
+const p=new THREE.Mesh(new THREE.SphereGeometry(0.03,6,6),pupilM);
+p.position.set(ex,2.55,0.33);pMesh.add(p);
+});
+// Hair
+const hair=new THREE.Mesh(new THREE.BoxGeometry(0.65,0.25,0.65),celMat(0x1A0A00));
+hair.position.y=2.8;pMesh.add(hair);
+// Arms
+const lAP=new THREE.Group();lAP.position.set(-0.65,2.1,0);pMesh.add(lAP);
+const lA=new THREE.Mesh(new THREE.BoxGeometry(0.25,0.9,0.25),celMat(h.color));
+lA.position.y=-0.45;lA.castShadow=true;lAP.add(lA);
+const lH=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.18),celMat(0xDEB887));
+lH.position.y=-0.95;lAP.add(lH);
+const rAP=new THREE.Group();rAP.position.set(0.65,2.1,0);pMesh.add(rAP);
+const rA=new THREE.Mesh(new THREE.BoxGeometry(0.25,0.9,0.25),celMat(h.color));
+rA.position.y=-0.45;rA.castShadow=true;rAP.add(rA);
+const rH=new THREE.Mesh(new THREE.BoxGeometry(0.18,0.18,0.18),celMat(0xDEB887));
+rH.position.y=-0.95;rAP.add(rH);
+// Legs
+const lLP=new THREE.Group();lLP.position.set(-0.2,1.0,0);pMesh.add(lLP);
+const lL=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.9,0.3),celMat(h.color));
+lL.position.y=-0.45;lL.castShadow=true;lLP.add(lL);
+const rLP=new THREE.Group();rLP.position.set(0.2,1.0,0);pMesh.add(rLP);
+const rL=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.9,0.3),celMat(h.color));
+rL.position.y=-0.45;rL.castShadow=true;rLP.add(rL);
+// Boots
+[-0.2,0.2].forEach(bx=>{
+const b=new THREE.Mesh(new THREE.BoxGeometry(0.32,0.2,0.4),celMat(0x3D1F00));
+b.position.set(bx,0.1,0.05);pMesh.add(b);
+});
+// Weapon
+if(charIdx===0){const ax=new THREE.Mesh(new THREE.BoxGeometry(0.08,0.5),celMat(0xCCCCDD));ax.position.set(0,0.3,0.2);rAP.add(ax);}
+else if(charIdx===1){const sw=new THREE.Mesh(new THREE.BoxGeometry(0.06,1.4,0.04),celMat(0xCCCCDD));sw.position.set(0,-0.1,0.2);rAP.add(sw);}
+else if(charIdx===2){const bw=new THREE.Mesh(new THREE.TorusGeometry(0.4,0.03,8,16),celMat(0x8B5A2B));bw.position.set(0,-0.3,0.2);bw.rotation.z=Math.PI/2;lAP.add(bw);}
+else{const st=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,2),celMat(0x5C3317));st.position.set(0,0.2,0.1);rAP.add(st);const cr=new THREE.Mesh(new THREE.SphereGeometry(0.12,8,8),new THREE.MeshBasicMaterial({color:0xAA22FF}));cr.position.set(0,1.3,0.1);rAP.add(cr);}
+limbs={lAP,rAP,lLP,rLP};
+pMesh.scale.set(2.2,2.2,2.2);
+pMesh.position.set(0,0,0);
+sc.add(pMesh);
+}
+// ENEMY
+function mkEnemy(data,x,z){
+const g=new THREE.Group();
+const mat=celMat(data.color);
+const meshes=[];
+if(data.type==='dragon'){
+const body=new THREE.Mesh(new THREE.BoxGeometry(4,3,7),mat);body.position.y=5;body.castShadow=true;g.add(body);meshes.push(body);
+const head=new THREE.Mesh(new THREE.BoxGeometry(1.5,1.2,2.5),mat);head.position.set(0,7,6);head.castShadow=true;g.add(head);meshes.push(head);
+[-1,1].forEach(s=>{const w=new THREE.Mesh(new THREE.BoxGeometry(8,0.2,4),mat);w.position.set(s*6,5.5,0);g.add(w);meshes.push(w);});
+for(let t=0;t<5;t++){const sg=new THREE.Mesh(new THREE.BoxGeometry(1.2-t*0.2,1-t*0.15,1.5),mat);sg.position.set(0,4.5-t*0.2,-4-t*1.5);g.add(sg);meshes.push(sg);}
+const em=new THREE.MeshBasicMaterial({color:0xFF6600});
+[-0.5,0.5].forEach(ex=>{const e=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.15,0.1),em);e.position.set(ex,7.5,7.3);g.add(e);meshes.push(e);});
+g.scale.set(2.5,2.5,2.5);
+}else{
+const sc2=data.type==='gollum'?0.7:data.type==='saruman'?1.1:1;
+const body=new THREE.Mesh(new THREE.BoxGeometry(0.8*sc2,1.1*sc2,0.45*sc2),mat);body.position.y=1.55*sc2;body.castShadow=true;g.add(body);meshes.push(body);
+const head=new THREE.Mesh(new THREE.BoxGeometry(0.55*sc2,0.55*sc2,0.5*sc2),mat);head.position.y=2.4*sc2;g.add(head);meshes.push(head);
+const em=new THREE.MeshBasicMaterial({color:0xFF0000});
+[-0.1,0.1].forEach(ex=>{const e=new THREE.Mesh(new THREE.SphereGeometry(0.06*sc2,6,6),em);e.position.set(ex*sc2,2.5*sc2,0.25*sc2);g.add(e);meshes.push(e);});
+[-0.5,0.5].forEach(ax=>{const a=new THREE.Mesh(new THREE.BoxGeometry(0.22*sc2,0.8*sc2,0.22*sc2),mat);a.position.set(ax*sc2,1.4*sc2,0);g.add(a);meshes.push(a);});
+[-0.18,0.18].forEach(lx=>{const l=new THREE.Mesh(new THREE.BoxGeometry(0.28*sc2,0.85*sc2,0.28*sc2),mat);l.position.set(lx*sc2,0.45*sc2,0);g.add(l);meshes.push(l);});
+if(data.type==='orc'){const sw=new THREE.Mesh(new THREE.BoxGeometry(0.06,1.0,0.03),celMat(0x555555));sw.position.set(0.6*sc2,1.5*sc2,0.2);g.add(sw);meshes.push(sw);}
+if(data.type==='nazgul'){const hood=new THREE.Mesh(new THREE.BoxGeometry(0.6*sc2,0.4*sc2,0.6*sc2),mat);hood.position.y=2.7*sc2;g.add(hood);meshes.push(hood);}
+if(data.type==='saruman'){const orb=new THREE.Mesh(new THREE.SphereGeometry(0.15),new THREE.MeshBasicMaterial({color:0x8800FF}));orb.position.set(0.5,2.8,0);g.add(orb);meshes.push(orb);}
+g.scale.set(2.2,2.2,2.2);
+}
+g.position.set(x,0,z);sc.add(g);
+return{...data,mesh:g,meshes,x,z,hp:data.hp,maxHp:data.hp,alive:true,atkT:0};
+}
+// NPC
+function mkNPC(data){
+const g=new THREE.Group();
+const mat=celMat(data.color);
+const body=new THREE.Mesh(new THREE.BoxGeometry(0.8,1.2,0.5),mat);body.position.y=1.55;g.add(body);
+const head=new THREE.Mesh(new THREE.BoxGeometry(0.6,0.6,0.55),celMat(0xDEB887));head.position.y=2.5;g.add(head);
+[-0.5,0.5].forEach(ax=>{const a=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.8,0.22),mat);a.position.set(ax,1.5,0);g.add(a);});
+[-0.18,0.18].forEach(lx=>{const l=new THREE.Mesh(new THREE.BoxGeometry(0.28,0.85,0.28),mat);l.position.set(lx,0.45,0);g.add(l);});
+// Quest marker
+const qm=new THREE.Mesh(new THREE.BoxGeometry(0.3,0.6,0.3),new THREE.MeshBasicMaterial({color:0xFFDD00}));
+qm.position.y=4;g.add(qm);
+if(data.name==='Gandalf'){const hat=new THREE.Mesh(new THREE.ConeGeometry(0.4,1,6),mat);hat.position.y=3.2;g.add(hat);}
+if(data.name==='Frodo')g.scale.set(1.8,1.8,1.8);else g.scale.set(2.2,2.2,2.2);
+g.position.set(data.x,0,data.z);sc.add(g);
+return{...data,mesh:g,qm};
+}
+// CLICK TARGET
+function onClick(e){
+const mouse=new THREE.Vector2((e.clientX/window.innerWidth)*2-1,-(e.clientY/window.innerHeight)*2+1);
+const ray=new THREE.Raycaster();ray.setFromCamera(mouse,cam);
+const hits=ray.intersectObjects(sc.children,true);
+if(hits.length>0){
+let found=null;
+enemies.forEach(en=>{if(!en.alive)return;en.meshes.forEach(m=>{if(hits.find(h=>h.object===m))found=en;});});
+if(found){target=found;showEnemy(found);msg('Alvo: '+found.name);}
+}
+}
+// GAME LOOP
+function animate(){
+requestAnimationFrame(animate);
+if(!running)return;
+const dt=0.016;
+// Player movement
+const spd=player.spd*dt*6;
+let mx=0,mz=0;
+const angle=Math.atan2(cam.position.x-pMesh.position.x,cam.position.z-pMesh.position.z);
+if(keys['KeyW']){mx+=Math.sin(angle)*spd;mz+=Math.cos(angle)*spd;}
+if(keys['KeyS']){mx-=Math.sin(angle)*spd;mz-=Math.cos(angle)*spd;}
+if(keys['KeyA']){mx+=Math.cos(angle)*spd;mz-=Math.sin(angle)*spd;}
+if(keys['KeyD']){mx-=Math.cos(angle)*spd;mz+=Math.sin(angle)*spd;}
+moving=(mx!==0||mz!==0);
+if(moving){
+player.x+=mx;player.z+=mz;
+pMesh.position.x=player.x;pMesh.position.z=player.z;
+pMesh.rotation.y=Math.atan2(mx,mz);
+}
+// Walk animation
+wt+=dt*player.spd*8;
+if(moving){
+const sw=Math.sin(wt)*0.8;
+limbs.lAP.rotation.x=sw;limbs.rAP.rotation.x=-sw;
+limbs.lLP.rotation.x=-sw*0.7;limbs.rLP.rotation.x=sw*0.7;
+}else{
+const b=Math.sin(wt*0.5)*0.06;
+limbs.lAP.rotation.x=b;limbs.rAP.rotation.x=-b;
+limbs.lLP.rotation.x*=0.9;limbs.rLP.rotation.x*=0.9;
+}
+// Camera follow
+cam.position.x=pMesh.position.x+Math.sin(camAngle)*camDist;
+cam.position.z=pMesh.position.z+Math.cos(camAngle)*camDist;
+cam.position.y=pMesh.position.y+10;
+cam.lookAt(pMesh.position.x,pMesh.position.y+3,pMesh.position.z);
+// Enemies AI
+enemies.forEach(e=>{
+if(!e.alive)return;
+const dx=player.x-e.x,dz=player.z-e.z;
+const dist=Math.sqrt(dx*dx+dz*dz);
+if(dist<20&&dist>3){const s=2*dt;e.x+=(dx/dist)*s;e.z+=(dz/dist)*s;e.mesh.position.x=e.x;e.mesh.position.z=e.z;e.mesh.rotation.y=Math.atan2(dx,dz);}
+if(dist<4){e.atkT-=dt;if(e.atkT<=0){const dmg=Math.max(1,e.atk-player.def+Math.floor(Math.random()*3));player.hp=Math.max(0,player.hp-dmg);msg(e.name+' ataca: -'+dmg+' HP');e.atkT=2;if(player.hp<=0){running=false;msg('GAME OVER');}}}
+});
+// Loot
+loot.forEach(l=>{
+if(l.got)return;
+l.mesh.position.y=1.2+Math.sin(Date.now()*0.003+l.x)*0.3;
+l.mesh.rotation.y+=0.02;
+const dist=Math.sqrt((l.x-player.x)**2+(l.z-player.z)**2);
+if(dist<3){l.got=true;sc.remove(l.mesh);
+if(l.type==='hp'){const h=Math.floor(player.maxHp*0.2);player.hp=Math.min(player.maxHp,player.hp+h);msg('Pocao HP: +'+h);}
+else{const m=Math.floor(player.maxMp*0.3);player.mp=Math.min(player.maxMp,player.mp+m);msg('Pocao MP: +'+m);}}
+});
+// NPC markers bob
+npcs.forEach(n=>{n.qm.position.y=4+Math.sin(Date.now()*0.003)*0.3;});
+// Mount
+if(mounted&&mMesh){mMesh.position.x=player.x;mMesh.position.z=player.z;mMesh.rotation.y=pMesh.rotation.y;}
+// Cooldowns
+player.cd=player.cd.map(c=>Math.max(0,c-dt));
+// HUD
+updateHUD();
+updateMap();
+renderer.render(sc,cam);
+}
+// CAMERA CONTROL
+let camAngle=Math.PI,camDist=18;
+window.addEventListener('contextmenu',e=>e.preventDefault());
+let dragging=false,lastX=0;
+window.addEventListener('mousedown',e=>{if(e.button===2){dragging=true;lastX=e.clientX;}});
+window.addEventListener('mouseup',e=>{if(e.button===2)dragging=false;});
+window.addEventListener('mousemove',e=>{if(dragging){camAngle+=(e.clientX-lastX)*0.01;lastX=e.clientX;}});
+window.addEventListener('wheel',e=>{camDist=Math.max(8,Math.min(40,camDist+e.deltaY*0.02));});
+// SKILLS
+const SCD=[1.5,8,12,15],SMP=[0,10,15,20];
+function skill(i){
+if(player.cd[i]>0)return;
+if(player.mp<SMP[i]){msg('Mana insuficiente!');return;}
+if(!target||!target.alive){
+let near=null,nd=20;
+enemies.forEach(e=>{if(!e.alive)return;const d=Math.sqrt((e.x-player.x)**2+(e.z-player.z)**2);if(d<nd){near=e;nd=d;}});
+if(near){target=near;showEnemy(near);}else{msg('Sem alvo!');return;}
+}
+const dist=Math.sqrt((target.x-player.x)**2+(target.z-player.z)**2);
+const range=charIdx===2?20:charIdx===3?18:5;
+if(dist>range){msg('Muito longe!');return;}
+player.mp=Math.max(0,player.mp-SMP[i]);
+player.cd[i]=SCD[i];
+let dmg=0;
+if(i===0)dmg=Math.max(1,player.atk-target.def+Math.floor(Math.random()*5));
+else if(i===1)dmg=Math.max(1,player.atk*2-target.def+Math.floor(Math.random()*8));
+else if(i===2)dmg=Math.max(1,Math.floor(player.atk*1.5)+Math.floor(Math.random()*6));
+else{player.hp=Math.min(player.maxHp,player.hp+Math.floor(player.maxHp*0.3));msg(H[charIdx].skills[3]+': Curou!');return;}
+target.hp-=dmg;
+msg(H[charIdx].skills[i]+': -'+dmg+' em '+target.name);
+if(target.hp<=0){target.alive=false;target.meshes.forEach(m=>sc.remove(m));sc.remove(target.mesh);player.xp+=target.xp;msg(target.name+' derrotado! +'+target.xp+' XP');lvlUp();target=null;document.getElementById('ebar').style.display='none';}
+}
+function lvlUp(){
+while(player.xp>=player.xpNext){player.xp-=player.xpNext;player.level++;player.xpNext=Math.floor(player.xpNext*1.5);player.maxHp+=15;player.hp=player.maxHp;player.maxMp+=5;player.mp=player.maxMp;player.atk+=3;player.def+=2;msg('LEVEL UP! Nivel '+player.level);}
+}
+// NPC
+function talkNPC(){
+let close=null,cd=8;
+npcs.forEach(n=>{const d=Math.sqrt((n.x-player.x)**2+(n.z-player.z)**2);if(d<cd){close=n;cd=d;}});
+if(!close)return;
+document.getElementById('dn').textContent=close.name;
+document.getElementById('dt').textContent=close.quest;
+document.getElementById('dlg').style.display='block';
+msg('Quest: '+close.quest);
+}
+// MOUNT
+function toggleMount(){
+if(mounted){mounted=false;if(mMesh){sc.remove(mMesh);mMesh=null;}player.spd=baseSpd;msg('Desmontou.');}
+else{mounted=true;baseSpd=player.spd;player.spd=baseSpd*2.2;
+mMesh=new THREE.Group();
+const bm=celMat(0x6B4226);
+const body=new THREE.Mesh(new THREE.BoxGeometry(1.2,1,2.5),bm);body.position.y=1.5;mMesh.add(body);
+const head=new THREE.Mesh(new THREE.BoxGeometry(0.5,0.6,1),bm);head.position.set(0,2.2,1.5);mMesh.add(head);
+[[-0.4,0.8],[-0.4,-0.8],[0.4,0.8],[0.4,-0.8]].forEach(([lx,lz])=>{const l=new THREE.Mesh(new THREE.BoxGeometry(0.2,1.2,0.2),bm);l.position.set(lx,0.6,lz);mMesh.add(l);});
+mMesh.scale.set(2,2,2);mMesh.position.set(player.x,0,player.z);sc.add(mMesh);
+msg('Montou! Velocidade dobrada!');}
+}
+// HUD
+function updateHUD(){
+document.getElementById('hpf').style.width=(player.hp/player.maxHp*100)+'%';
+document.getElementById('hpl').textContent=player.hp+'/'+player.maxHp;
+document.getElementById('mpf').style.width=(player.mp/player.maxMp*100)+'%';
+document.getElementById('mpl').textContent=Math.floor(player.mp)+'/'+player.maxMp;
+document.getElementById('xpfill').style.width=(player.xp/player.xpNext*100)+'%';
+document.getElementById('lvl').textContent='Nivel '+player.level;
+document.querySelectorAll('.sk').forEach((b,i)=>{const cd=b.querySelector('.cd');if(player.cd[i]>0){cd.style.display='block';cd.textContent=player.cd[i].toFixed(1);}else cd.style.display='none';});
+if(target&&target.alive){document.getElementById('ebar').style.display='block';document.getElementById('ename').textContent=target.name;document.getElementById('ehpf').style.width=(target.hp/target.maxHp*100)+'%';}
+}
+function showEnemy(e){document.getElementById('ebar').style.display='block';document.getElementById('ename').textContent=e.name;document.getElementById('ehpf').style.width=(e.hp/e.maxHp*100)+'%';}
+function updateMap(){
+const c=document.getElementById('map').getContext('2d');
+c.fillStyle='#1a1a1a';c.fillRect(0,0,140,140);
+const s=140/(MAP*2);
+enemies.forEach(e=>{if(!e.alive)return;c.fillStyle='#F00';c.fillRect((e.x+MAP)*s-2,(e.z+MAP)*s-2,4,4);});
+npcs.forEach(n=>{c.fillStyle='#FFD700';c.fillRect((n.x+MAP)*s-2,(n.z+MAP)*s-2,4,4);});
+c.fillStyle='#0F0';c.beginPath();c.arc((player.x+MAP)*s,(player.z+MAP)*s,4,0,Math.PI*2);c.fill();
+}
+function msg(t){
+const log=document.getElementById('log');
+const m=document.createElement('div');m.className='msg';m.textContent=t;log.appendChild(m);
+if(log.children.length>6)log.removeChild(log.firstChild);
+setTimeout(()=>{m.style.opacity='0';setTimeout(()=>m.remove(),1000);},4000);
+}
 </script>
 </body>
 </html>
+<button id="newbtn" onclick="location.reload()">Novo Personagem</button>
+<div id="dlg"><h3 id="dn"></h3><p id="dt"></p><button onclick="document.getElementById('dlg').style.display='none'">Aceitar</button><button onclick="document.getElementById('dlg').style.display='none'">Fechar</button></div>
+</div>
