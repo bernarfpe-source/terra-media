@@ -199,10 +199,10 @@ function onClick(e){const mouse=new THREE.Vector2((e.clientX/window.innerWidth)*
 function animate(){requestAnimationFrame(animate);if(!running)return;const dt=0.016;
 const spd=player.spd*dt*6;let mx=0,mz=0;
 const ang=camAngle;
-if(keys['KeyW']){mx+=Math.sin(ang)*spd;mz+=Math.cos(ang)*spd;}
-if(keys['KeyS']){mx-=Math.sin(ang)*spd;mz-=Math.cos(ang)*spd;}
-if(keys['KeyA']){mx+=Math.cos(ang)*spd;mz-=Math.sin(ang)*spd;}
-if(keys['KeyD']){mx-=Math.cos(ang)*spd;mz+=Math.sin(ang)*spd;}
+if(keys['KeyW']){mx-=Math.sin(ang)*spd;mz-=Math.cos(ang)*spd;}
+if(keys['KeyS']){mx+=Math.sin(ang)*spd;mz+=Math.cos(ang)*spd;}
+if(keys['KeyA']){mx-=Math.cos(ang)*spd;mz+=Math.sin(ang)*spd;}
+if(keys['KeyD']){mx+=Math.cos(ang)*spd;mz-=Math.sin(ang)*spd;}
 moving=(mx!==0||mz!==0);
 if(moving){player.x+=mx;player.z+=mz;pMesh.position.x=player.x;pMesh.position.z=player.z;pMesh.rotation.y=Math.atan2(mx,mz);}
 cam.position.x=player.x+Math.sin(camAngle)*camDist;cam.position.z=player.z+Math.cos(camAngle)*camDist;cam.position.y=12;cam.lookAt(player.x,3,player.z);
